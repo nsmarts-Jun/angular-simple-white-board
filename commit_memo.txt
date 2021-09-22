@@ -1,4 +1,4 @@
-git commit -m "update2"
+git commit -am "update4"
 
 git commit --amend --no-edit --date "Wed 22 Sep 2021 09:58:02 KST"
 git commit --amend --no-edit --date "Wed 22 Sep 2021 10:58:02 KST"
