@@ -1,12 +1,6 @@
-git commit -am "update46"
+git commit -am "update47"
 
 git commit --amend --no-edit --date "Wed 15 Sep 2021 09:58:02 KST"
 
 
 git push origin +baek
-
-git commit 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45
-git commit 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45
-git commit 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45
-git commit 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45
-git commit 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45
