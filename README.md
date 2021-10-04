@@ -1,5 +1,5 @@
 # 화이트보드
-
+### V1.0.0
 ### 화이트보드, 복잡한 지식을을 시각화화여 쉽게 이해하도록 도와주며 개개인에게 그룹안에서 개입성을 증가시켜 프로젝트, 미팅, 또는 그룹활동 내에서 효율성을 증가시킵니다. 또한, 화이트보드에서 제공하는 기능들을 통해  작업을 보다 원할하게 수행할 수 있습니다. 게다가 인터넷을 통하여 언제어디서든 사용 할 수 있는 장점이 있습니다.
 <br/>
 
@@ -82,18 +82,3 @@ npm start
 ![after deleting](https://user-images.githubusercontent.com/91444796/146333989-b06295a1-7d7d-4ce2-9686-6864205d29ce.png)
 #### 페이지 삭제를 클릭 시 현재 보이는 페이지가 삭제됨
 
-.
-12qqweqweefasdfad1123
-qwefasdffadffasdfasddsd
-sdfadsfdfadsgzdfasdfafasfasdfdfasfa
-dfasdfsdxcvzxcvzfasdffasdfadfqewrasdf
-axcvzxcvzfaasdfa
-assdfaasdfxcvzxcvfa
-dfaasdfzcxvzxcasdfadfa
-asdfavzxcvzfasdfa
-sdfaxcvzxcv
-zxcvzcxvzx
-cvzcxvzcxvz
-xcvzxcvzxcvz
-xcvadsfa
-sdfasdfad
