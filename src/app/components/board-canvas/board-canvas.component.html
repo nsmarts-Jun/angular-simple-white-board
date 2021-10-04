@@ -1,0 +1,8 @@
+	<div #canvasContainer class="canvas-container" [dragScroll]="dragOn">
+		<div class="canvasTeacher">
+			<canvas #teacherCanvas></canvas>
+		</div>
+		<div class="cover" [hidden] = "editDisabled">
+			<canvas #canvasCover></canvas>
+		</div>
+	</div>
