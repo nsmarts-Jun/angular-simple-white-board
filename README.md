@@ -852,42 +852,7 @@ exports.myEmployeeLeaveListSearch = async (req, res) => {
 //                         }
 //                     ]
 //                     , as: "usedLeave"
-//                 }
-//             },
-//             {
-//                 $unwind: {
-//                     path: '$totalLeave',
-//                     preserveNullAndEmptyArrays: true
-//                 }
-//             },
-//             {
-//                 $unwind: {
-//                     path: '$usedLeave',
-//                     preserveNullAndEmptyArrays: true
-//                 }
-//             },
-//             {
-//                 $project: {
-//                     _id: 1,
-//                     name: 1,
-//                     year: 1,
-//                     position: 1,
-//                     location: 1,
-//                     emp_start_date: 1,
-//                     emp_end_date: 1,
-//                     isManager: 1,
-//                     totalLeave: {
-//                         $arrayElemAt: ["$totalLeave.leave_standard", "$year"]
-//                     },
-//                     usedLeave: 1
-//                 }
-//             }
-//         ]);
-
-// 		console.log(myManagerEmployeeList);
-// 		return res.status(200).send({
-// 			message: 'connected managerEmployeeList',
-// 			myManagerEmployeeList
+//                 
 // 		});
 
 // 	} catch (error) {
