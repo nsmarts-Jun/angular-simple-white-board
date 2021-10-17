@@ -83,17 +83,18 @@ npm start
 #### 페이지 삭제를 클릭 시 현재 보이는 페이지가 삭제됨
 
 .
-aweraw123123rawrawer
-qweq123weqeqweaw
-q1e2312qwweraw
-sfawe1231241qweweqewaewra
-aqwqwee3123qwewerawe
-adghae412qweqhsqweqraewrafgadfa
-31
-123
-qwe231231qweawera
-awera123wer
-aew23123raewrawer
-aewr123awera1231
-231231
+awe1231231r
+q12312eq12323123weqeqweaw
+q3121e23123112qwweraw
+sf23123awe1231223123141qweweqewaewra
+aqwqwee3123q123123werawe
+adgh123123ewrafgadfa
+31123123
+123123
+123123123ra
+1231er
+aew2312323122312r
+aewr123awe31231231
+23312331
 23123
+12312
