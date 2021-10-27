@@ -1067,7 +1067,1067 @@ exports.myEmployeeLeaveListSearch = async (req, res) => {
 //                         }
 //                     ]
 //                     , as: "usedLeave"
+//                 } },
+//             {
+//                 $addFields: {
+//                     year: {
+//                         $floor: {
+//                             $let: {
+//                                 vars: {
+//                                     diff: {
+//                                         $subtract: [new Date(), "$emp_start_date"]
+//                                     }
+//                                 },
+//                                 in: {
+//                                     $divide: ["$$diff", (365 * 24 * 60 * 60 * 1000)]
+//                                 }
+//                             }
+//                         }
+//                     }
 //                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: 'leaverequests',
+//                     let: {
+//                         userId: '$_id',
+//                         years: '$year',
+//                     },
+//                     pipeline: [
+//                         {
+//                             $match: {
+//                                 $expr: {
+//                                     $and: [
+//                                         { $eq: ["$requestor", "$$userId"] },
+//                                         { $eq: ["$year", "$$years"] }
+
+//                                     ]
+//                                 }
+//                             }
+//                         },
+//                         {
+//                             $facet: {
+//                                 used_annual_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'annual_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_sick_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'sick_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_replacement_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'replacement_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ]
+//                             }
+//                         }
+//                     ]
+//                     , as: "usedLeave"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$totalLeave',
+//                     preserveNullAndEmptyArrays: true
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$usedLeave',
+//                     preserveNullAndEmptyArrays: true },
+//             {
+//                 $addFields: {
+//                     year: {
+//                         $floor: {
+//                             $let: {
+//                                 vars: {
+//                                     diff: {
+//                                         $subtract: [new Date(), "$emp_start_date"]
+//                                     }
+//                                 },
+//                                 in: {
+//                                     $divide: ["$$diff", (365 * 24 * 60 * 60 * 1000)]
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: 'leaverequests',
+//                     let: {
+//                         userId: '$_id',
+//                         years: '$year',
+//                     },
+//                     pipeline: [
+//                         {
+//                             $match: {
+//                                 $expr: {
+//                                     $and: [
+//                                         { $eq: ["$requestor", "$$userId"] },
+//                                         { $eq: ["$year", "$$years"] }
+
+//                                     ]
+//                                 }
+//                             }
+//                         },
+//                         {
+//                             $facet: {
+//                                 used_annual_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'annual_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_sick_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'sick_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_replacement_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'replacement_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ]
+//                             }
+//                         }
+//                     ]
+//                     , as: "usedLeave"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$totalLeave',
+//                     preserveNullAndEmptyArrays: true
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$usedLeave',
+//                     preserveNullAndEmptyArrays: true },
+//             {
+//                 $addFields: {
+//                     year: {
+//                         $floor: {
+//                             $let: {
+//                                 vars: {
+//                                     diff: {
+//                                         $subtract: [new Date(), "$emp_start_date"]
+//                                     }
+//                                 },
+//                                 in: {
+//                                     $divide: ["$$diff", (365 * 24 * 60 * 60 * 1000)]
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: 'leaverequests',
+//                     let: {
+//                         userId: '$_id',
+//                         years: '$year',
+//                     },
+//                     pipeline: [
+//                         {
+//                             $match: {
+//                                 $expr: {
+//                                     $and: [
+//                                         { $eq: ["$requestor", "$$userId"] },
+//                                         { $eq: ["$year", "$$years"] }
+
+//                                     ]
+//                                 }
+//                             }
+//                         },
+//                         {
+//                             $facet: {
+//                                 used_annual_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'annual_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_sick_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'sick_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_replacement_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'replacement_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ]
+//                             }
+//                         }
+//                     ]
+//                     , as: "usedLeave"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$totalLeave',
+//                     preserveNullAndEmptyArrays: true
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$usedLeave',
+//                     preserveNullAndEmptyArrays: true },
+//             {
+//                 $addFields: {
+//                     year: {
+//                         $floor: {
+//                             $let: {
+//                                 vars: {
+//                                     diff: {
+//                                         $subtract: [new Date(), "$emp_start_date"]
+//                                     }
+//                                 },
+//                                 in: {
+//                                     $divide: ["$$diff", (365 * 24 * 60 * 60 * 1000)]
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: 'leaverequests',
+//                     let: {
+//                         userId: '$_id',
+//                         years: '$year',
+//                     },
+//                     pipeline: [
+//                         {
+//                             $match: {
+//                                 $expr: {
+//                                     $and: [
+//                                         { $eq: ["$requestor", "$$userId"] },
+//                                         { $eq: ["$year", "$$years"] }
+
+//                                     ]
+//                                 }
+//                             }
+//                         },
+//                         {
+//                             $facet: {
+//                                 used_annual_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'annual_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_sick_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'sick_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_replacement_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'replacement_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ]
+//                             }
+//                         }
+//                     ]
+//                     , as: "usedLeave"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$totalLeave',
+//                     preserveNullAndEmptyArrays: true
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$usedLeave',
+//                     preserveNullAndEmptyArrays: true },
+//             {
+//                 $addFields: {
+//                     year: {
+//                         $floor: {
+//                             $let: {
+//                                 vars: {
+//                                     diff: {
+//                                         $subtract: [new Date(), "$emp_start_date"]
+//                                     }
+//                                 },
+//                                 in: {
+//                                     $divide: ["$$diff", (365 * 24 * 60 * 60 * 1000)]
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: 'leaverequests',
+//                     let: {
+//                         userId: '$_id',
+//                         years: '$year',
+//                     },
+//                     pipeline: [
+//                         {
+//                             $match: {
+//                                 $expr: {
+//                                     $and: [
+//                                         { $eq: ["$requestor", "$$userId"] },
+//                                         { $eq: ["$year", "$$years"] }
+
+//                                     ]
+//                                 }
+//                             }
+//                         },
+//                         {
+//                             $facet: {
+//                                 used_annual_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'annual_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_sick_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'sick_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_replacement_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'replacement_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ]
+//                             }
+//                         }
+//                     ]
+//                     , as: "usedLeave"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$totalLeave',
+//                     preserveNullAndEmptyArrays: true
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$usedLeave',
+//                     preserveNullAndEmptyArrays: true },
+//             {
+//                 $addFields: {
+//                     year: {
+//                         $floor: {
+//                             $let: {
+//                                 vars: {
+//                                     diff: {
+//                                         $subtract: [new Date(), "$emp_start_date"]
+//                                     }
+//                                 },
+//                                 in: {
+//                                     $divide: ["$$diff", (365 * 24 * 60 * 60 * 1000)]
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: 'leaverequests',
+//                     let: {
+//                         userId: '$_id',
+//                         years: '$year',
+//                     },
+//                     pipeline: [
+//                         {
+//                             $match: {
+//                                 $expr: {
+//                                     $and: [
+//                                         { $eq: ["$requestor", "$$userId"] },
+//                                         { $eq: ["$year", "$$years"] }
+
+//                                     ]
+//                                 }
+//                             }
+//                         },
+//                         {
+//                             $facet: {
+//                                 used_annual_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'annual_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_sick_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'sick_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_replacement_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'replacement_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ]
+//                             }
+//                         }
+//                     ]
+//                     , as: "usedLeave"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$totalLeave',
+//                     preserveNullAndEmptyArrays: true
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$usedLeave',
+//                     preserveNullAndEmptyArrays: true },
+//             {
+//                 $addFields: {
+//                     year: {
+//                         $floor: {
+//                             $let: {
+//                                 vars: {
+//                                     diff: {
+//                                         $subtract: [new Date(), "$emp_start_date"]
+//                                     }
+//                                 },
+//                                 in: {
+//                                     $divide: ["$$diff", (365 * 24 * 60 * 60 * 1000)]
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: 'leaverequests',
+//                     let: {
+//                         userId: '$_id',
+//                         years: '$year',
+//                     },
+//                     pipeline: [
+//                         {
+//                             $match: {
+//                                 $expr: {
+//                                     $and: [
+//                                         { $eq: ["$requestor", "$$userId"] },
+//                                         { $eq: ["$year", "$$years"] }
+
+//                                     ]
+//                                 }
+//                             }
+//                         },
+//                         {
+//                             $facet: {
+//                                 used_annual_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'annual_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_sick_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'sick_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_replacement_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'replacement_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ]
+//                             }
+//                         }
+//                     ]
+//                     , as: "usedLeave"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$totalLeave',
+//                     preserveNullAndEmptyArrays: true
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$usedLeave',
+//                     preserveNullAndEmptyArrays: true },
+//             {
+//                 $addFields: {
+//                     year: {
+//                         $floor: {
+//                             $let: {
+//                                 vars: {
+//                                     diff: {
+//                                         $subtract: [new Date(), "$emp_start_date"]
+//                                     }
+//                                 },
+//                                 in: {
+//                                     $divide: ["$$diff", (365 * 24 * 60 * 60 * 1000)]
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: 'leaverequests',
+//                     let: {
+//                         userId: '$_id',
+//                         years: '$year',
+//                     },
+//                     pipeline: [
+//                         {
+//                             $match: {
+//                                 $expr: {
+//                                     $and: [
+//                                         { $eq: ["$requestor", "$$userId"] },
+//                                         { $eq: ["$year", "$$years"] }
+
+//                                     ]
+//                                 }
+//                             }
+//                         },
+//                         {
+//                             $facet: {
+//                                 used_annual_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'annual_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_sick_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'sick_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_replacement_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'replacement_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ]
+//                             }
+//                         }
+//                     ]
+//                     , as: "usedLeave"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$totalLeave',
+//                     preserveNullAndEmptyArrays: true
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$usedLeave',
+//                     preserveNullAndEmptyArrays: true },
+//             {
+//                 $addFields: {
+//                     year: {
+//                         $floor: {
+//                             $let: {
+//                                 vars: {
+//                                     diff: {
+//                                         $subtract: [new Date(), "$emp_start_date"]
+//                                     }
+//                                 },
+//                                 in: {
+//                                     $divide: ["$$diff", (365 * 24 * 60 * 60 * 1000)]
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: 'leaverequests',
+//                     let: {
+//                         userId: '$_id',
+//                         years: '$year',
+//                     },
+//                     pipeline: [
+//                         {
+//                             $match: {
+//                                 $expr: {
+//                                     $and: [
+//                                         { $eq: ["$requestor", "$$userId"] },
+//                                         { $eq: ["$year", "$$years"] }
+
+//                                     ]
+//                                 }
+//                             }
+//                         },
+//                         {
+//                             $facet: {
+//                                 used_annual_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'annual_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_sick_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'sick_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_replacement_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'replacement_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ]
+//                             }
+//                         }
+//                     ]
+//                     , as: "usedLeave"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$totalLeave',
+//                     preserveNullAndEmptyArrays: true
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$usedLeave',
+//                     preserveNullAndEmptyArrays: true },
+//             {
+//                 $addFields: {
+//                     year: {
+//                         $floor: {
+//                             $let: {
+//                                 vars: {
+//                                     diff: {
+//                                         $subtract: [new Date(), "$emp_start_date"]
+//                                     }
+//                                 },
+//                                 in: {
+//                                     $divide: ["$$diff", (365 * 24 * 60 * 60 * 1000)]
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: 'leaverequests',
+//                     let: {
+//                         userId: '$_id',
+//                         years: '$year',
+//                     },
+//                     pipeline: [
+//                         {
+//                             $match: {
+//                                 $expr: {
+//                                     $and: [
+//                                         { $eq: ["$requestor", "$$userId"] },
+//                                         { $eq: ["$year", "$$years"] }
+
+//                                     ]
+//                                 }
+//                             }
+//                         },
+//                         {
+//                             $facet: {
+//                                 used_annual_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'annual_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_sick_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'sick_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ],
+//                                 used_replacement_leave: [
+//                                     {
+//                                         $match: {
+//                                             $expr: {
+//                                                 $eq: ["$leaveType", 'replacement_leave']
+//                                             }
+//                                         }
+//                                     },
+//                                     {
+//                                         $group: {
+//                                             _id: null,
+//                                             sum: {
+//                                                 "$sum": "$leaveDuration"
+//                                             }
+//                                         }
+//                                     }
+//                                 ]
+//                             }
+//                         }
+//                     ]
+//                     , as: "usedLeave"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$totalLeave',
+//                     preserveNullAndEmptyArrays: true
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: '$usedLeave',
+//                     preserveNullAndEmptyArrays: true
 //             },
 //             {
 //                 $unwind: {
