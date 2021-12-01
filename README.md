@@ -83,16 +83,17 @@ npm start
 #### 페이지 삭제를 클릭 시 현재 보이는 페이지가 삭제됨
 
 .
-12qqasdasd
-1qwrqwradsfadfqweqw
-qwweqweqweqwrqasfsfrt31weraer12
-3ewwqrqwrqfasdweqwwqweqwerq12e123err
-aqeqwweqazsdasdfadaewewerawer1123
-qwefasdfasdasdfasdaeasdfdafqweq
-zfsasdfafasdfasdsfasdsd
-sdfadsfdfasdfafasfasdfdfasfa
-dfasdffasdfadfqewrasdf
-adfasdfasdffaadsfadf
-assdfaasdfasdfsdfadfasd
-asdfaasdfasdfa
-dfaddsfasdfadfa
+12qadsfasdf
+qwweqweasdfasdqweqwrqasfsfrt31weraer12
+3ewwqrqwrqasdfasdfasdweqwwqweqwerq12e123err
+aqeqwwefasdfazsdasdfadaewewerawer1123
+qwefasdffadfadfasdaeasdfdafqweq
+zfsasdfafdasfdaasdsd
+sdfadsfdsdfasdfasdfafasfasdfdfasfa
+dfasdfsdfasdffasdfadfqewrasdf
+adfaasdfa
+assdfaasdfasdfasdfasdfsdfadfasd
+asdfaasdfadsfsdfasdfa
+dfaasdfsfasdfadfa
+asdfasdfasdfa
+sdfasdadf
