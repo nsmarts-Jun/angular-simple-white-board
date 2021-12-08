@@ -82,4 +82,4 @@ npm start
 ![after deleting](https://user-images.githubusercontent.com/91444796/146333989-b06295a1-7d7d-4ce2-9686-6864205d29ce.png)
 #### 페이지 삭제를 클릭 시 현재 보이는 페이지가 삭제됨
 
-..
+.
