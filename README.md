@@ -83,28 +83,3 @@ npm start
 #### 페이지 삭제를 클릭 시 현재 보이는 페이지가 삭제됨
 
 
-### 펜 사이즈 조정
-![6](https://user-images.githubusercontent.com/91444796/146332011-2e62a9b7-95c9-45d8-b395-f9bb8af8ee29.png)
-#### 윈도우 위 화면에 보이는 분홍 박스안의 3개의 버튼을 클릭하여 펜 굵기를 조정
----
-<br/>
-
-### 펜 컬러 조정
-![7](https://user-images.githubusercontent.com/91444796/146332719-de2bdaaf-44f3-470c-b0e3-43de1bdb102d.png)
-#### 윈도우 위 화면에 보이는 분홍 박스안의 컬러들을 클릭하여 펜 컬러를 조정
----
-<br/>
-
-### 페이지 추가
-
-![8 0](https://user-images.githubusercontent.com/91444796/146333651-31008150-7237-4dd2-a1f3-1a10892b8885.png)
-#### ADD PAGE 클릭하면 새로운 페이지 생성
-<br/>
-![8](https://user-images.githubusercontent.com/91444796/146333779-056e2e4a-c63f-48eb-baf5-277e13ed3af3.png)
-#### 왼쪽 사이드에 보이는 2번째 빈 페이지를 클릭하면 클릭된 페이지로 이동
----
-<br/>
-
-### 페이지 삭제
-![after deleting](https://user-images.githubusercontent.com/91444796/146333989-b06295a1-7d7d-4ce2-9686-6864205d29ce.png)
-#### 페이지 삭제를 클릭 시 현재 보이는 페이지가 삭제됨
