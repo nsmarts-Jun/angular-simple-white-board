@@ -124,6 +124,10 @@ export class BoardSlideViewComponent implements OnInit {
       // console.log('<---[BUS] change:containerSize ::  this.thumbWindowSize : ', this.thumbWindowSize)
     });
 
+    this.eventBusService.on('rmoveDrawEventThumRendering',this.unsubscribe$,(data)=>{
+      this.renderThumbnails();
+    })
+
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////

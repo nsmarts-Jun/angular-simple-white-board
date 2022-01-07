@@ -135,16 +135,28 @@ export class BoardCanvasComponent implements OnInit, OnDestroy {
       this.onScroll();
     });
 
+    this.eventBusListeners();
   }
+
   // end of ngOnInit
-
-
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
 
     // render listener 해제
     this.rendererEvent1();
+  }
+
+  eventBusListeners() {
+    // board-nav로 부터 현재 페이지 드로잉 이벤트 삭제 
+    // 다시 페이지 렌더링
+    this.eventBusService.on('rmoveDrawEventPageRendering',this.unsubscribe$,(data)=>{
+      const viewInfo = this.viewInfoService.state;
+      //document Number -> 1부터 시작.
+      const pageNum = viewInfo.currentPage;
+      const zoomScale = viewInfo.zoomScale;
+      this.pageRender(pageNum, zoomScale)
+    })
   }
 
   /**

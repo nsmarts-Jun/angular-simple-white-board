@@ -1,11 +1,15 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { Subject } from 'rxjs';
-import { takeUntil, distinctUntilChanged } from 'rxjs/operators'
+import { takeUntil, distinctUntilChanged, pluck } from 'rxjs/operators'
 
 import { CANVAS_CONFIG } from 'src/@wb/config/config';
+import { EventBusService } from 'src/@wb/services/eventBus/event-bus.service';
+import { EventData } from 'src/@wb/services/eventBus/event.class';
+import { DrawStorageService } from 'src/@wb/storage/draw-storage.service';
 
 import { EditInfoService } from 'src/@wb/store/edit-info.service';
+import { ViewInfoService } from 'src/@wb/store/view-info.service';
 
 
 
@@ -27,7 +31,8 @@ export class BoardNavComponent implements OnInit {
   currentColor = 'black';
   currentTool: string = 'pen';
   menuName: any;
-
+  numPages: any;
+  currentPageNum: any;
 
   // Width: 3단계 설정
   widthSet = CANVAS_CONFIG.widthSet;
@@ -40,11 +45,21 @@ export class BoardNavComponent implements OnInit {
   private unsubscribe$ = new Subject<void>();
 
   constructor(
-    private editInfoService: EditInfoService
+    private editInfoService: EditInfoService,
+    private eventBusService: EventBusService,
+    private drawStorageService: DrawStorageService,
+    private viewInfoService: ViewInfoService,
   ) { }
 
 
   ngOnInit(): void {
+    
+    // 현재 Page 변경
+    this.viewInfoService.state$
+      .pipe(takeUntil(this.unsubscribe$), pluck('currentPage'), distinctUntilChanged())
+      .subscribe((currentPage) => {
+        this.currentPageNum = currentPage;
+      });
 
     this.editInfoService.state$
       .pipe(takeUntil(this.unsubscribe$), distinctUntilChanged())
@@ -107,7 +122,18 @@ export class BoardNavComponent implements OnInit {
     // console.log(tool)
     const editInfo = Object.assign({}, this.editInfoService.state);
     editInfo.mode = 'draw';
+    console.log(this.numPages)
+    // 디폴트는 pen
+    // 이미 지우개가 선택되어있을때 한번 더 
+    if(editInfo.tool == 'eraser' && tool == 'eraser'){
+      console.log('지우개 모드 2번 연달아 눌렀습니다----------------')
+      this.drawStorageService.clearDrawingEvents(this.currentPageNum);
+      this.eventBusService.emit(new EventData('rmoveDrawEventPageRendering',''));
+      this.eventBusService.emit(new EventData('rmoveDrawEventThumRendering',''));
+    }
+
     editInfo.tool = tool;
+    
     this.editInfoService.setEditInfo(editInfo);
 
     // 지우개 2번 Click은 여기서 check 하는 것이 좋을 듯?

@@ -46,4 +46,7 @@ export class EditInfoService extends Store<any> {
       ...this.state, ...editInfo
     });
   }
+  getInfo(){
+    this.state
+  }
 }
