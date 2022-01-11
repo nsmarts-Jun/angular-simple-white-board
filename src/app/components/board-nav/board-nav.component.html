@@ -41,7 +41,7 @@
         <div class="tool-set">
 
           <button type="button" (click)="changeTool('pen');" mat-icon-button >
-            <mat-icon [ngClass]="(currentTool == 'pen') && (mode == 'draw')?'active':''">draw</mat-icon>
+            <mat-icon [ngClass]="(currentTool == 'pen') && (mode == 'draw')?'active':''">mode</mat-icon>
           </button>
 
           <button type="button" (click)="changeTool('eraser');" mat-icon-button>
@@ -50,6 +50,10 @@
 
           <button type="button" (click)="changeMode('move');" mat-icon-button>
             <mat-icon [ngClass]="(mode == 'move')?'active':''"> open_with </mat-icon>
+          </button>
+
+          <button type="button" (click)="changeTool('shape');" mat-icon-button>
+            <mat-icon [ngClass]="(currentTool == 'shape') && (mode == 'draw')?'active':''"> draw </mat-icon>
           </button>
 
 

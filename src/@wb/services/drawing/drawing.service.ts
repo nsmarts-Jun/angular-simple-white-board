@@ -16,24 +16,23 @@ export class DrawingService {
     context.fillStyle = tool.color;
     context.strokeStyle = tool.color;
     context.lineWidth = 1; // check line width 영향...
-
     context.beginPath();
     context.arc(points[0], points[1], tool.width / 2, 0, Math.PI * 2, !0);
     context.fill();
     console.log('Start')
     context.closePath();
-
     if (tool.type === "eraser") {
       // eraser Marker 표시
       this.eraserMarker(context, [points[0], points[1]], tool.width);
     }
+    console.log(points)
   }
 
 
   /**
    * Drawing Move
    */
-  move(context, points, tool, zoomScale) {
+  move(context, points, tool, zoomScale, sourceCanvas) {
     context.globalCompositeOperation = 'source-over';
 
     context.lineCap = "round";
@@ -48,7 +47,6 @@ export class DrawingService {
     let d;
     let i;
     const len = points.length / 2; // x, y 1차원 배열로 처리 --> /2 필요.
-
     context.beginPath();
     // console.log('move')
     switch (tool.type) {
@@ -108,12 +106,58 @@ export class DrawingService {
         this.eraserMarker(context, [points[2 * (len - 1)], points[2 * (len - 1) + 1]], tool.width);
         break;
 
+      case 'shape':
+        console.log('shape moving~~~~~~')
+        // if (len < 3) {
+
+          // for(i = 0; i<points.length; i++){
+          //         redraw(points[i]);
+          // }
+          // context.moveTo(points[len-2].x, points[len-2].y);
+          // context.lineTo(points[len-1].x, points[len-1].y);
+          context.clearRect(0,0,sourceCanvas.width,sourceCanvas.height);
+          console.log(points)
+          context.moveTo(points[0], points[1]);
+          context.lineTo(points[2 * (len - 1)], points[2 * (len - 1) + 1]);
+          context.lineTo(points[0]+(points[0] - points[2 * (len - 1)]), points[2 * (len - 1) + 1]);
+          context.closePath();
+          context.clearRect(0,0,sourceCanvas.width,sourceCanvas.height);
+          context.stroke();
+          break;
+        // }
+
+        // a = (points[len - 3].x + points[len - 2].x) / 2;
+        // b = (points[len - 3].y + points[len - 2].y) / 2;
+        // c = (points[len - 2].x + points[len - 1].x) / 2;
+        // d = (points[len - 2].y + points[len - 1].y) / 2;
+        // a = (points[2 * (len - 3)] + points[2 * (len - 2)]) / 2;
+        // b = (points[2 * (len - 3) + 1] + points[2 * (len - 2) + 1]) / 2;
+        // c = (points[2 * (len - 2)] + points[2 * (len - 1)]) / 2;
+        // d = (points[2 * (len - 2) + 1] + points[2 * (len - 1) + 1]) / 2;
+
+        // context.moveTo(a, b);
+        // // context.quadraticCurveTo(points[len - 2].x, points[len - 2].y, c, d);
+        // context.quadraticCurveTo(points[2 * (len - 2)], points[2 * (len - 2) + 1], c, d);
+        // context.stroke();
+        // context.closePath();
+        break;
+
 
       default:
         break;
     }
-  }
 
+    function redraw(points){
+      context.beginPath();
+      context.moveTo(points[0], points[1]);
+      context.lineTo(points[2 * (len - 1)], points[2 * (len - 1) + 1]);
+      context.lineTo(points[0]+(points[0] - points[2 * (len - 1)]), points[2 * (len - 1) + 1]);
+      context.closePath();
+      context.fillStyle = 'black'
+      context.fill();
+    }
+  }
+  
   end(context, points, tool) {
     context.lineCap = "round";
     context.lineJoin = 'round';
@@ -128,7 +172,7 @@ export class DrawingService {
     let d;
     const len = points.length / 2;
 
-    if (tool.type === "pen") {
+    if (tool.type === "pen" || tool.type === "shape") {
       context.globalCompositeOperation = 'source-over';
     }
     else {
@@ -136,30 +180,50 @@ export class DrawingService {
     }
 
     // context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    if (len < 3) {
-      context.beginPath();
-      context.arc(points[0], points[1], tool.width / 2, 0, Math.PI * 2, !0);
-      context.fill();
-      context.closePath();
-      return;
+    switch (tool.type) {
+      case 'pen':
+        if (len < 3) {
+          context.beginPath();
+          context.arc(points[0], points[1], tool.width / 2, 0, Math.PI * 2, !0);
+          context.fill();
+          context.closePath();
+          return;
+        }
+    
+        context.beginPath();
+        context.moveTo(points[0], points[1]);
+        // console.log('end')
+        for (i = 1; i < len - 2; i++) {
+          // var c = (points[i].x + points[i + 1].x) / 2,
+          // 	d = (points[i].y + points[i + 1].y) / 2;
+          //	context.quadraticCurveTo(points[i].x, points[i].y, c, d);
+          c = (points[2 * i] + points[2 * (i + 1)]) / 2;
+          d = (points[2 * i + 1] + points[2 * (i + 1) + 1]) / 2;
+          context.quadraticCurveTo(points[2 * i], points[2 * i + 1], c, d);
+        }
+        // context.quadraticCurveTo(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y);
+        context.quadraticCurveTo(points[2 * i], points[2 * i + 1], points[2 * (i + 1)], points[2 * (i + 1) + 1]);
+        context.stroke();
+        // --------------------------------------------------------------------
+        // 원본 코드에는 있었으나 shape랑 있을시 오류 발생
+        // 우선 주석 처리
+        // context.closePath();
+        // --------------------------------------------------------------------
+        break;
+      
+      case 'shape':
+        console.log(points)
+        context.moveTo(points[0], points[1]);
+        context.lineTo(points[2 * (len - 1)], points[2 * (len - 1) + 1]);
+        context.lineTo(points[0]+(points[0] - points[2 * (len - 1)]), points[2 * (len - 1) + 1]);
+        context.closePath();
+        context.stroke();
+        break;
+      
+        default:
+        break;
     }
-
-    context.beginPath();
-    context.moveTo(points[0], points[1]);
-    // console.log('end')
-    for (i = 1; i < len - 2; i++) {
-      // var c = (points[i].x + points[i + 1].x) / 2,
-      // 	d = (points[i].y + points[i + 1].y) / 2;
-      //	context.quadraticCurveTo(points[i].x, points[i].y, c, d);
-      c = (points[2 * i] + points[2 * (i + 1)]) / 2;
-      d = (points[2 * i + 1] + points[2 * (i + 1) + 1]) / 2;
-      context.quadraticCurveTo(points[2 * i], points[2 * i + 1], c, d);
-    }
-    // context.quadraticCurveTo(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y);
-    context.quadraticCurveTo(points[2 * i], points[2 * i + 1], points[2 * (i + 1)], points[2 * (i + 1) + 1]);
-    context.stroke();
-    context.closePath();
+    
 
   }
 

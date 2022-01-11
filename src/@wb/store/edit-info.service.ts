@@ -12,7 +12,8 @@ class InitEditInfo {
 
   toolsConfig = {
     pen: { width: 4, color: 'black' },
-    eraser: { width: 60, color: '#ffffff' }
+    eraser: { width: 60, color: '#ffffff' },
+    shape: { width: 4, color: 'black' }
   };
 
   toolDisabled = false; // move인 경우

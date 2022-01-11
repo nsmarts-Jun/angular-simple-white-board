@@ -122,6 +122,7 @@ export class BoardCanvasComponent implements OnInit, OnDestroy {
           color: editInfo.toolsConfig[currentTool].color,
           width: editInfo.toolsConfig[currentTool].width
         };
+        console.log(this.currentToolInfo)
 
         const zoomScale = this.viewInfoService.state.zoomScale;
 

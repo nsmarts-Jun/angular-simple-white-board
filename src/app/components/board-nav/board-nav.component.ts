@@ -38,11 +38,15 @@ export class BoardNavComponent implements OnInit {
   widthSet = CANVAS_CONFIG.widthSet;
   currentWidth = {
     pen: this.widthSet.pen[0],
-    eraser: this.widthSet.eraser[2]
+    eraser: this.widthSet.eraser[2],
+    shape: this.widthSet.pen[0],
   };
   mode: any = 'move';
 
   private unsubscribe$ = new Subject<void>();
+
+  // canvas editing
+  // https://dev.to/nyxtom/how-to-render-code-blocks-in-canvas-from-a-markdown-editor-4lif
 
   constructor(
     private editInfoService: EditInfoService,
@@ -70,7 +74,8 @@ export class BoardNavComponent implements OnInit {
         this.currentColor = editInfo.toolsConfig.pen.color;
         this.currentWidth = {
           pen: editInfo.toolsConfig.pen.width,
-          eraser: editInfo.toolsConfig.eraser.width
+          eraser: editInfo.toolsConfig.eraser.width,
+          shape: editInfo.toolsConfig.pen.width,
         }
       });
   }
@@ -86,7 +91,7 @@ export class BoardNavComponent implements OnInit {
   changeColor(color) {
     const editInfo = Object.assign({}, this.editInfoService.state);
 
-    if (editInfo.mode != 'draw' || editInfo.tool!='pen' ) return;
+    if (editInfo.mode != 'draw' || editInfo.tool!='pen' || editInfo.tool!='shape' ) return;
 
     editInfo.toolsConfig.pen.color = color;
     this.editInfoService.setEditInfo(editInfo);
@@ -105,7 +110,7 @@ export class BoardNavComponent implements OnInit {
 
     if (editInfo.mode != 'draw') return;
 
-    const tool = editInfo.tool; // tool: 'pen', 'eraser'
+    const tool = editInfo.tool; // tool: 'pen', 'eraser', 'shape'
     editInfo.toolsConfig[tool].width = width;
 
     this.editInfoService.setEditInfo(editInfo);
@@ -119,9 +124,10 @@ export class BoardNavComponent implements OnInit {
    *
    */
   changeTool(tool) {
-    // console.log(tool)
+    console.log(tool)
     const editInfo = Object.assign({}, this.editInfoService.state);
     editInfo.mode = 'draw';
+    
     console.log(this.numPages)
     // 디폴트는 pen
     // 이미 지우개가 선택되어있을때 한번 더 
@@ -133,6 +139,7 @@ export class BoardNavComponent implements OnInit {
     }
 
     editInfo.tool = tool;
+    console.log(editInfo)
     
     this.editInfoService.setEditInfo(editInfo);
 
@@ -148,7 +155,7 @@ export class BoardNavComponent implements OnInit {
    */
   changeMode(mode) {
     const editInfo = Object.assign({}, this.editInfoService.state);
-    editInfo.mode = 'move';
+    editInfo.mode = mode;
     this.editInfoService.setEditInfo(editInfo);
   }
 

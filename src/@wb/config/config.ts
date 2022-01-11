@@ -19,6 +19,7 @@ export const CANVAS_CONFIG = {
 	navbarHeight: 70,
 	widthSet: {
 		pen: [4, 7, 13],
-		eraser: [30, 45, 60]
+		eraser: [30, 45, 60],
+		shape: [4, 7, 13],
 	}
 };

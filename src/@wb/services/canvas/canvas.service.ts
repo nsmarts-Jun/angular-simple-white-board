@@ -190,6 +190,7 @@ export class CanvasService {
     // console.log(this.listenerSet);
 
     function downEvent(event) {
+      console.log('downEvent!!')
       event.preventDefault();
       isDown = true;
       // 시작시 touch/mouse가 동시에 발생할 때 (chrome dev 등)
@@ -217,8 +218,8 @@ export class CanvasService {
         oldPoint = newPoint;
         points.push(oldPoint[0]); // x
         points.push(oldPoint[1]); // y
-
-        drawingService.move(sourceCtx, points, tool, scale); // scale: eraser marker 정확히 지우기 위함.
+        console.log(points)
+        drawingService.move(sourceCtx, points, tool, scale, sourceCanvas); // scale: eraser marker 정확히 지우기 위함.
         event.preventDefault();
         // console.log(points)
       }
