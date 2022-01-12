@@ -260,18 +260,17 @@ export class DrawingService {
         break;
       // 선 함수
       case 'line':
-        console.log('done')
+        context.beginPath();
         context.moveTo(points[0], points[1]);
         context.lineTo(points[2 * (len - 1)], points[2 * (len - 1) + 1]);
         context.quadraticCurveTo(points[2 * i], points[2 * i + 1], points[2 * (i + 1)], points[2 * (i + 1) + 1]);
         context.closePath();
         context.stroke();
-        context.strokeStyle(tool.color);
+        context.strokeStyle = tool.color;
         break;
 
       // 타원 함수
       case 'circle':
-        console.log('done')
         // https://stackoverflow.com/questions/21594756/drawing-circle-ellipse-on-html5-canvas-using-mouse-events
         var radiusX = (points[2 * (len - 1)] - points[0]) * 0.5,   /// radius for x based on input
           radiusY = (points[2 * (len - 1) + 1] - points[1]) * 0.5,   /// radius for y based on input
@@ -297,7 +296,7 @@ export class DrawingService {
         /// close it and stroke it for demo
         context.closePath();
         context.stroke();
-        context.strokeStyle(tool.color);
+        context.strokeStyle = tool.color;
         break;
 
       // 사각형 함수
@@ -305,9 +304,10 @@ export class DrawingService {
         console.log('done')
         context.beginPath();
         context.strokeRect(points[0], points[1], (points[2 * (len - 1)] - points[0]), (points[2 * (len - 1) + 1] - points[1]));
+        context.closePath();
         // fillRect는 색이 채워지고 strokeRect은 색이 채워지지 안흔다.
         // context.fillRect(points[0], points[1], (points[2 * (len - 1)] - points[0]), (points[2 * (len - 1) + 1] - points[1]));
-        context.strokeStyle(tool.color);
+        context.strokeStyle = tool.color;
         break;
 
       // 모서리가 둥근 사각형 그리기
@@ -329,7 +329,7 @@ export class DrawingService {
         context.arcTo(x, y, x + width, y, radius);
         context.closePath();
         context.stroke();
-        context.strokeStyle(tool.color);
+        context.strokeStyle = tool.color;
         break;
 
       default:
