@@ -109,9 +109,9 @@ export class DrawingService {
       // https://github.com/SidRH/Drawing-Different-Shapes-using-JavaScript-on-Mousedrag-
       // https://github.com/demihe/HTML5-Canvas-Paint-Application/blob/bfdee5248a46c6955b52e2e23db8fc51dc785110/drawing.js#L206
       // 선 그리기
-      case 'shape':
+      case 'line':
         console.log('shape moving~~~~~~')
-        context.clearRect(0,0,sourceCanvas.width,sourceCanvas.height);
+        context.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
         console.log(points)
         context.moveTo(points[0], points[1]);
         context.lineTo(points[2 * (len - 1)], points[2 * (len - 1) + 1]);
@@ -122,64 +122,80 @@ export class DrawingService {
 
       // https://github.com/SidRH/Drawing-Different-Shapes-using-JavaScript-on-Mousedrag-
       // https://github.com/demihe/HTML5-Canvas-Paint-Application/blob/bfdee5248a46c6955b52e2e23db8fc51dc785110/drawing.js#L206
-      // // 삼각형 그리기
-      // case 'shape':
-      //   console.log('shape moving~~~~~~')
-      //   context.clearRect(0,0,sourceCanvas.width,sourceCanvas.height);
-      //   console.log(points)
-      //   context.moveTo(points[0], points[1]);
-      //   context.lineTo(points[2 * (len - 1)], points[2 * (len - 1) + 1]);
-      //   context.lineTo(points[0]+(points[0] - points[2 * (len - 1)]), points[2 * (len - 1) + 1]);
-      //   context.closePath();
-      //   context.stroke();
-      //   break;
 
-      // // 사각형 그리기
-      // case 'shape':
-      //   if (len > 3) {
-      //     console.log('shape moving~~~~~~')
-      //     context.clearRect(0,0,sourceCanvas.width,sourceCanvas.height);
-      //     console.log(points)
-      //     context.strokeRect(points[0], points[1], (points[2 * (len - 1)] - points[0]), (points[2 * (len - 1) + 1] - points[1]));
-      //     // fillRect는 색이 채워지고 strokeRect은 색이 채워지지 않는다.
-      //     // context.fillRect(points[0], points[1], (points[2 * (len - 1)] - points[0]), (points[2 * (len - 1) + 1] - points[1]));
-      //     context.closePath();
-      //     context.stroke();
-      //   }
-      //   break;
+      // 타원그리기
+      case 'circle':
+        if (len > 3) {
+          context.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
+          // https://stackoverflow.com/questions/21594756/drawing-circle-ellipse-on-html5-canvas-using-mouse-events
+          var radiusX = (points[2 * (len - 1)] - points[0]) * 0.5,   /// radius for x based on input
+            radiusY = (points[2 * (len - 1) + 1] - points[1]) * 0.5,   /// radius for y based on input
+            centerX = points[0] + radiusX,      /// calc center
+            centerY = points[1] + radiusY,
+            step = 0.01,                 /// resolution of ellipse
+            temp = step,                    /// counter
+            pi2 = Math.PI * 2 - step;    /// end angle
 
-      // // 타원그리기
-      // case 'shape':
-      //   if (len > 3) {
-      //     context.clearRect(0,0,sourceCanvas.width,sourceCanvas.height);
-      //     // https://stackoverflow.com/questions/21594756/drawing-circle-ellipse-on-html5-canvas-using-mouse-events
-      //     var radiusX = (points[2 * (len - 1)] - points[0]) * 0.5,   /// radius for x based on input
-      //       radiusY = (points[2 * (len - 1) + 1] - points[1]) * 0.5,   /// radius for y based on input
-      //       centerX = points[0] + radiusX,      /// calc center
-      //       centerY = points[1] + radiusY,
-      //       step = 0.01,                 /// resolution of ellipse
-      //       temp = step,                    /// counter
-      //       pi2 = Math.PI * 2 - step;    /// end angle
+          /// start a new path
+          context.beginPath();
 
-      //     /// start a new path
-      //     context.beginPath();
-          
-      //     /// set start point at angle 0
-      //     context.moveTo(centerX + radiusX * Math.cos(0),
-      //       centerY + radiusY * Math.sin(0));
+          /// set start point at angle 0
+          context.moveTo(centerX + radiusX * Math.cos(0),
+            centerY + radiusY * Math.sin(0));
 
-      //     /// create the ellipse    
-      //     for (; temp < pi2; temp += step) {
-      //       context.lineTo(centerX + radiusX * Math.cos(temp),
-      //         centerY + radiusY * Math.sin(temp));
-      //     }
+          /// create the ellipse    
+          for (; temp < pi2; temp += step) {
+            context.lineTo(centerX + radiusX * Math.cos(temp),
+              centerY + radiusY * Math.sin(temp));
+          }
 
-      //     /// close it and stroke it for demo
-      //     context.closePath();
-      //     context.strokeStyle = 'black';
-      //     context.stroke();
-      //   }
-      //   break;
+          /// close it and stroke it for demo
+          context.closePath();
+          context.strokeStyle = 'black';
+          context.stroke();
+        }
+        break;
+
+      // 사각형 그리기
+      case 'rectangle':
+        if (len > 3) {
+          console.log('shape moving~~~~~~')
+          context.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
+          console.log(points)
+          context.strokeRect(points[0], points[1], (points[2 * (len - 1)] - points[0]), (points[2 * (len - 1) + 1] - points[1]));
+          // fillRect는 색이 채워지고 strokeRect은 색이 채워지지 않는다.
+          // context.fillRect(points[0], points[1], (points[2 * (len - 1)] - points[0]), (points[2 * (len - 1) + 1] - points[1]));
+          context.closePath();
+          context.stroke();
+        }
+        break;
+
+
+
+      // 모서리가 둥근 사각형 그리기
+      case 'roundedRectangle':
+        if (len > 3) {
+          const x = points[0];
+          const y = points[1];
+          const width = (points[2 * (len - 1)] - points[0])
+          const height = (points[2 * (len - 1) + 1] - points[1])
+          let radius = 20;
+
+          context.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
+          context.beginPath();
+          if (points[0] > points[2 * (len - 1)]) {
+            context.moveTo(x - radius, y);
+          } else {
+            context.moveTo(x + radius, y);
+          }
+          context.arcTo(x + width, y, x + width, y + height, radius);
+          context.arcTo(x + width, y + height, x, y + height, radius);
+          context.arcTo(x, y + height, x, y, radius);
+          context.arcTo(x, y, x + width, y, radius);
+          context.closePath();
+          context.stroke();
+        }
+        break;
 
       default:
         break;
@@ -201,7 +217,8 @@ export class DrawingService {
     let d;
     const len = points.length / 2;
 
-    if (tool.type === "pen" || tool.type === "shape") {
+    if (tool.type === "pen" || tool.type === "line" || tool.type === "circle" ||
+      tool.type === "rectangle" || tool.type === "roundedRectangle") {
       context.globalCompositeOperation = 'source-over';
     }
     else {
@@ -242,52 +259,78 @@ export class DrawingService {
 
         break;
       // 선 함수
-      case 'shape':
-          console.log('shape moving~~~~~~')
-          context.moveTo(points[0], points[1]);
-          context.lineTo(points[2 * (len - 1)], points[2 * (len - 1) + 1]);
-          context.quadraticCurveTo(points[2 * i], points[2 * i + 1], points[2 * (i + 1)], points[2 * (i + 1) + 1]);
-          context.closePath();
-          context.stroke();
-          break;
+      case 'line':
+        console.log('done')
+        context.moveTo(points[0], points[1]);
+        context.lineTo(points[2 * (len - 1)], points[2 * (len - 1) + 1]);
+        context.quadraticCurveTo(points[2 * i], points[2 * i + 1], points[2 * (i + 1)], points[2 * (i + 1) + 1]);
+        context.closePath();
+        context.stroke();
+        context.strokeStyle(tool.color);
+        break;
 
-      // // 사각형 함수
-      // case 'shape':
-      //   context.beginPath();
-      //   context.strokeRect(points[0], points[1], (points[2 * (len - 1)] - points[0]), (points[2 * (len - 1) + 1] - points[1]));
-      //   // fillRect는 색이 채워지고 strokeRect은 색이 채워지지 안흔다.
-      //   // context.fillRect(points[0], points[1], (points[2 * (len - 1)] - points[0]), (points[2 * (len - 1) + 1] - points[1]));
-      //   break;
+      // 타원 함수
+      case 'circle':
+        console.log('done')
+        // https://stackoverflow.com/questions/21594756/drawing-circle-ellipse-on-html5-canvas-using-mouse-events
+        var radiusX = (points[2 * (len - 1)] - points[0]) * 0.5,   /// radius for x based on input
+          radiusY = (points[2 * (len - 1) + 1] - points[1]) * 0.5,   /// radius for y based on input
+          centerX = points[0] + radiusX,      /// calc center
+          centerY = points[1] + radiusY,
+          step = 0.01,                 /// resolution of ellipse
+          a = step,                    /// counter
+          pi2 = Math.PI * 2 - step;    /// end angle
 
-      // // 타원 함수
-      // case 'shape':
-      //   // https://stackoverflow.com/questions/21594756/drawing-circle-ellipse-on-html5-canvas-using-mouse-events
-      //   var radiusX = (points[2 * (len - 1)] - points[0]) * 0.5,   /// radius for x based on input
-      //     radiusY = (points[2 * (len - 1) + 1] - points[1]) * 0.5,   /// radius for y based on input
-      //     centerX = points[0] + radiusX,      /// calc center
-      //     centerY = points[1] + radiusY,
-      //     step = 0.01,                 /// resolution of ellipse
-      //     a = step,                    /// counter
-      //     pi2 = Math.PI * 2 - step;    /// end angle
+        /// start a new path
+        context.beginPath();
 
-      //   /// start a new path
-      //   context.beginPath();
+        /// set start point at angle 0
+        context.moveTo(centerX + radiusX * Math.cos(0),
+          centerY + radiusY * Math.sin(0));
 
-      //   /// set start point at angle 0
-      //   context.moveTo(centerX + radiusX * Math.cos(0),
-      //     centerY + radiusY * Math.sin(0));
+        /// create the ellipse    
+        for (; a < pi2; a += step) {
+          context.lineTo(centerX + radiusX * Math.cos(a),
+            centerY + radiusY * Math.sin(a));
+        }
 
-      //   /// create the ellipse    
-      //   for (; a < pi2; a += step) {
-      //     context.lineTo(centerX + radiusX * Math.cos(a),
-      //       centerY + radiusY * Math.sin(a));
-      //   }
+        /// close it and stroke it for demo
+        context.closePath();
+        context.stroke();
+        context.strokeStyle(tool.color);
+        break;
 
-      //   /// close it and stroke it for demo
-      //   context.closePath();
-      //   context.strokeStyle = 'black';
-      //   context.stroke();
-      //   break;
+      // 사각형 함수
+      case 'rectangle':
+        console.log('done')
+        context.beginPath();
+        context.strokeRect(points[0], points[1], (points[2 * (len - 1)] - points[0]), (points[2 * (len - 1) + 1] - points[1]));
+        // fillRect는 색이 채워지고 strokeRect은 색이 채워지지 안흔다.
+        // context.fillRect(points[0], points[1], (points[2 * (len - 1)] - points[0]), (points[2 * (len - 1) + 1] - points[1]));
+        context.strokeStyle(tool.color);
+        break;
+
+      // 모서리가 둥근 사각형 그리기
+      case 'roundedRectangle':
+        const x = points[0];
+        const y = points[1];
+        const width = (points[2 * (len - 1)] - points[0])
+        const height = (points[2 * (len - 1) + 1] - points[1])
+        let radius = 20;
+        context.beginPath();
+        if (points[0] > points[2 * (len - 1)]) {
+          context.moveTo(x - radius, y);
+        } else {
+          context.moveTo(x + radius, y);
+        }
+        context.arcTo(x + width, y, x + width, y + height, radius);
+        context.arcTo(x + width, y + height, x, y + height, radius);
+        context.arcTo(x, y + height, x, y, radius);
+        context.arcTo(x, y, x + width, y, radius);
+        context.closePath();
+        context.stroke();
+        context.strokeStyle(tool.color);
+        break;
 
       default:
         break;

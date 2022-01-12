@@ -40,7 +40,7 @@
 
         <div class="tool-set">
 
-          <button type="button" (click)="changeTool('pen');" mat-icon-button >
+          <button type="button" (click)="changeTool('pen');" mat-icon-button>
             <mat-icon [ngClass]="(currentTool == 'pen') && (mode == 'draw')?'active':''">mode</mat-icon>
           </button>
 
@@ -52,9 +52,28 @@
             <mat-icon [ngClass]="(mode == 'move')?'active':''"> open_with </mat-icon>
           </button>
 
-          <button type="button" (click)="changeTool('shape');" mat-icon-button>
-            <mat-icon [ngClass]="(currentTool == 'shape') && (mode == 'draw')?'active':''"> draw </mat-icon>
+          <button type="button" (click)="changeTool('line');" mat-icon-button mat-button
+            [matMenuTriggerFor]="shapeMemu">
+            <mat-icon
+              [ngClass]="(currentTool == 'line' || currentTool == 'circle'  ||currentTool == 'rectangle' || currentTool == 'roundedRectangle' ) && (mode == 'draw')?'active':''">
+              draw </mat-icon>
           </button>
+
+          <mat-menu #shapeMemu="matMenu" class="menuCustomize" fxLayout="column">
+            <button type="button" (click)="changeTool('line');" mat-icon-button>
+              <mat-icon [ngClass]="(currentTool == 'line') && (mode == 'draw')?'active':''"> line </mat-icon>
+            </button>
+            <button type="button" (click)="changeTool('circle');" mat-icon-button>
+              <mat-icon [ngClass]="(currentTool == 'circle') && (mode == 'draw')?'active':''"> circle </mat-icon>
+            </button>
+            <button type="button" (click)="changeTool('rectangle');" mat-icon-button>
+              <mat-icon [ngClass]="(currentTool == 'rectangle') && (mode == 'draw')?'active':''"> rectangle </mat-icon>
+            </button>
+            <button type="button" (click)="changeTool('roundedRectangle');" mat-icon-button>
+              <mat-icon [ngClass]="(currentTool == 'roundedRectangle') && (mode == 'draw')?'active':''"> rectangle
+              </mat-icon>
+            </button>
+          </mat-menu>
 
 
           <!-- <button type="button" mat-icon-button color="white">

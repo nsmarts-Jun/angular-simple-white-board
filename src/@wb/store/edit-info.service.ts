@@ -9,11 +9,14 @@ import { Store } from './store';
 class InitEditInfo {
   mode = 'draw'; // draw, sync(여기? 또는 별도?)
   tool = 'pen'; // eraser, ...
-
+  
   toolsConfig = {
     pen: { width: 4, color: 'black' },
     eraser: { width: 60, color: '#ffffff' },
-    shape: { width: 4, color: 'black' }
+    line: { width: 4, color: 'black' },
+    circle: { width: 4, color: 'black' },
+    rectangle: { width: 4, color: 'black' },
+    roundedRectangle: { width: 4, color: 'black' },
   };
 
   toolDisabled = false; // move인 경우

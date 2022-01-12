@@ -39,7 +39,10 @@ export class BoardNavComponent implements OnInit {
   currentWidth = {
     pen: this.widthSet.pen[0],
     eraser: this.widthSet.eraser[2],
-    shape: this.widthSet.pen[0],
+    line: this.widthSet.line[0],
+    circle: this.widthSet.circle[0],
+    rectangle: this.widthSet.rectangle[0],
+    roundedRectangle: this.widthSet.roundedRectangle[0],
   };
   mode: any = 'move';
 
@@ -75,7 +78,10 @@ export class BoardNavComponent implements OnInit {
         this.currentWidth = {
           pen: editInfo.toolsConfig.pen.width,
           eraser: editInfo.toolsConfig.eraser.width,
-          shape: editInfo.toolsConfig.pen.width,
+          line: editInfo.toolsConfig.line.width,
+          circle: editInfo.toolsConfig.circle.width,
+          rectangle: editInfo.toolsConfig.rectangle.width,
+          roundedRectangle: editInfo.toolsConfig.roundedRectangle.width,
         }
       });
   }
@@ -91,9 +97,15 @@ export class BoardNavComponent implements OnInit {
   changeColor(color) {
     const editInfo = Object.assign({}, this.editInfoService.state);
 
-    if (editInfo.mode != 'draw' || editInfo.tool!='pen' || editInfo.tool!='shape' ) return;
-
+    if (editInfo.mode != 'draw' || ( editInfo.tool!='pen' && editInfo.tool!='line' &&
+        editInfo.tool !='circle' && editInfo.tool !='rectangle' && editInfo.tool !='roundedRectangle'
+    )) return;
+    
     editInfo.toolsConfig.pen.color = color;
+    editInfo.toolsConfig.line.color = color;
+    editInfo.toolsConfig.circle.color = color;
+    editInfo.toolsConfig.rectangle.color = color;
+    editInfo.toolsConfig.roundedRectangle.color = color;
     this.editInfoService.setEditInfo(editInfo);
   }
 
@@ -144,8 +156,8 @@ export class BoardNavComponent implements OnInit {
     this.editInfoService.setEditInfo(editInfo);
 
     // 지우개 2번 Click은 여기서 check 하는 것이 좋을 듯?
-
   }
+
 
   /**
    * Move 선택
