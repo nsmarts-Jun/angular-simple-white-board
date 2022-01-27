@@ -11,6 +11,10 @@ import { DrawStorageService } from 'src/@wb/storage/draw-storage.service';
 import { EditInfoService } from 'src/@wb/store/edit-info.service';
 import { ViewInfoService } from 'src/@wb/store/view-info.service';
 
+// icon icon 별로 불러오기
+import eraserIcon from '@iconify/icons-mdi/eraser';
+import markerIcon from '@iconify/icons-mdi/marker';
+import shapeOutlineIcon from '@iconify/icons-mdi/shape-outline';
 
 
 @Component({
@@ -34,10 +38,18 @@ export class BoardNavComponent implements OnInit {
   numPages: any;
   currentPageNum: any;
 
+  // iconify TEST //////////////////////
+  eraserIcon = eraserIcon;
+  shapeOutlineIcon = shapeOutlineIcon;
+  markerIcon = markerIcon;
+  //////////////////////////////////////
+
   // Width: 3단계 설정
   widthSet = CANVAS_CONFIG.widthSet;
   currentWidth = {
+    pointer: this.widthSet.pointer[0],
     pen: this.widthSet.pen[0],
+    highlighter: this.widthSet.highlighter[0],
     eraser: this.widthSet.eraser[2],
     line: this.widthSet.line[0],
     circle: this.widthSet.circle[0],
@@ -76,7 +88,9 @@ export class BoardNavComponent implements OnInit {
         this.currentTool = editInfo.tool;
         this.currentColor = editInfo.toolsConfig.pen.color;
         this.currentWidth = {
+          pointer: editInfo.toolsConfig.pointer.width,
           pen: editInfo.toolsConfig.pen.width,
+          highlighter: editInfo.toolsConfig.highlighter.width,
           eraser: editInfo.toolsConfig.eraser.width,
           line: editInfo.toolsConfig.line.width,
           circle: editInfo.toolsConfig.circle.width,
@@ -97,16 +111,14 @@ export class BoardNavComponent implements OnInit {
   changeColor(color) {
     const editInfo = Object.assign({}, this.editInfoService.state);
 
-    if (editInfo.mode != 'draw' || ( editInfo.tool!='pen' && editInfo.tool!='line' &&
-        editInfo.tool !='circle' && editInfo.tool !='rectangle' && editInfo.tool !='roundedRectangle'
-    )) return;
-    
-    editInfo.toolsConfig.pen.color = color;
-    editInfo.toolsConfig.line.color = color;
-    editInfo.toolsConfig.circle.color = color;
-    editInfo.toolsConfig.rectangle.color = color;
-    editInfo.toolsConfig.roundedRectangle.color = color;
-    this.editInfoService.setEditInfo(editInfo);
+    if (editInfo.mode != 'draw' || (editInfo.tool == 'erasar' || editInfo.tool == 'pointer')) return;
+        editInfo.toolsConfig.pen.color = color;
+        editInfo.toolsConfig.highlighter.color = color;
+        editInfo.toolsConfig.line.color = color;
+        editInfo.toolsConfig.circle.color = color;
+        editInfo.toolsConfig.rectangle.color = color;
+        editInfo.toolsConfig.roundedRectangle.color = color;
+        this.editInfoService.setEditInfo(editInfo);
   }
 
   /**
@@ -138,21 +150,19 @@ export class BoardNavComponent implements OnInit {
   changeTool(tool) {
     console.log(tool)
     const editInfo = Object.assign({}, this.editInfoService.state);
-    editInfo.mode = 'draw';
-    
-    console.log(this.numPages)
-    // 디폴트는 pen
-    // 이미 지우개가 선택되어있을때 한번 더 
-    if(editInfo.tool == 'eraser' && tool == 'eraser'){
-      console.log('지우개 모드 2번 연달아 눌렀습니다----------------')
-      this.drawStorageService.clearDrawingEvents(this.currentPageNum);
-      this.eventBusService.emit(new EventData('rmoveDrawEventPageRendering',''));
-      this.eventBusService.emit(new EventData('rmoveDrawEventThumRendering',''));
-    }
+    if (editInfo.tool == 'eraser' && editInfo.mode == 'draw' && tool == 'eraser') {
+      if(confirm("Do you want to delete all drawings on the current page?")){
 
+          // 자기자신한테 있는 드로우 이벤트 제거
+          this.drawStorageService.clearDrawingEvents(this.currentPageNum);
+          this.eventBusService.emit(new EventData('rmoveDrawEventPageRendering', ''));
+          this.eventBusService.emit(new EventData('rmoveDrawEventThumRendering', ''));
+      } else {
+          return;
+      }
+    }
+    editInfo.mode = 'draw';
     editInfo.tool = tool;
-    console.log(editInfo)
-    
     this.editInfoService.setEditInfo(editInfo);
 
     // 지우개 2번 Click은 여기서 check 하는 것이 좋을 듯?

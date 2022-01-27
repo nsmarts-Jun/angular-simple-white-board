@@ -10,20 +10,62 @@ export class DrawingService {
      * Drawing Start
      */
   start(context, points, tool) {
-    context.globalCompositeOperation = 'source-over';
-    context.lineCap = "round";
-    context.lineJoin = 'round';
-    context.fillStyle = tool.color;
-    context.strokeStyle = tool.color;
-    context.lineWidth = 1; // check line width 영향...
-    context.beginPath();
-    context.arc(points[0], points[1], tool.width / 2, 0, Math.PI * 2, !0);
-    context.fill();
-    console.log('Start')
-    context.closePath();
-    if (tool.type === "eraser") {
-      // eraser Marker 표시
-      this.eraserMarker(context, [points[0], points[1]], tool.width);
+
+    switch (tool.type) {
+      case 'pen':
+        context.globalCompositeOperation = 'source-over';
+        context.lineCap = "round";
+        context.lineJoin = 'round';
+        context.fillStyle = tool.color;
+        context.strokeStyle = tool.color;
+        context.lineWidth = 1; // check line width 영향...
+        context.beginPath();
+        context.arc(points[0], points[1], tool.width / 2, 0, Math.PI * 2, !0);
+        context.fill();
+        console.log('Start')
+        context.closePath();
+        break;
+      case 'eraser':
+          // eraser Marker 표시
+          this.eraserMarker(context, [points[0], points[1]], tool.width);
+        break;
+      // 포인터
+      case 'pointer':
+        context.globalCompositeOperation = 'source-over';
+        context.lineCap = "round";
+        context.lineJoin = 'round';
+        context.beginPath();
+        context.arc(points[0], points[1], 20 / 2, 0, Math.PI * 2, !0);
+        context.fillStyle = 'red';
+        
+        // context.stroke();
+        // 포인터 추가 부분 //////////
+        context.shadowColor = "red";
+        context.shadowBlur = 30;
+        // context.globalAlpha = 0.7;
+        document.getElementById('canvas').style.cursor = 'none'
+        ////////////////////////////////////////
+        context.fill();
+
+        context.closePath();
+        break;
+      case 'highlighter':
+  
+        // context.globalCompositeOperation = 'color'
+        context.globalAlpha = 0.5;
+        context.lineCap = "square";
+        context.lineJoin = 'square';
+        context.beginPath();
+        context.fillStyle = '#ff0';
+        
+        context.fillRect(points[0]-(tool.width/2), points[1]-(tool.width/2), tool.width, tool.width);
+        context.fill();
+
+        context.closePath();
+        break;
+
+      default:
+        break;
     }
     console.log(points)
   }
@@ -33,6 +75,7 @@ export class DrawingService {
    * Drawing Move
    */
   move(context, points, tool, zoomScale, sourceCanvas) {
+    
     context.globalCompositeOperation = 'source-over';
 
     context.lineCap = "round";
@@ -118,6 +161,7 @@ export class DrawingService {
         context.quadraticCurveTo(points[2 * i], points[2 * i + 1], points[2 * (i + 1)], points[2 * (i + 1) + 1]);
         context.closePath();
         context.stroke();
+        context.strokeStyle = tool.color;
         break;
 
       // https://github.com/SidRH/Drawing-Different-Shapes-using-JavaScript-on-Mousedrag-
@@ -151,8 +195,8 @@ export class DrawingService {
 
           /// close it and stroke it for demo
           context.closePath();
-          context.strokeStyle = 'black';
           context.stroke();
+          context.strokeStyle = tool.color;
         }
         break;
 
@@ -167,34 +211,133 @@ export class DrawingService {
           // context.fillRect(points[0], points[1], (points[2 * (len - 1)] - points[0]), (points[2 * (len - 1) + 1] - points[1]));
           context.closePath();
           context.stroke();
+          context.strokeStyle = tool.color;
         }
         break;
 
-
-
+      // https://github.com/goldfire/CanvasInput
+      // https://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-using-html-canvas
       // 모서리가 둥근 사각형 그리기
       case 'roundedRectangle':
-        if (len > 3) {
-          const x = points[0];
-          const y = points[1];
-          const width = (points[2 * (len - 1)] - points[0])
-          const height = (points[2 * (len - 1) + 1] - points[1])
-          let radius = 20;
-
-          context.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
-          context.beginPath();
-          if (points[0] > points[2 * (len - 1)]) {
-            context.moveTo(x - radius, y);
-          } else {
-            context.moveTo(x + radius, y);
-          }
-          context.arcTo(x + width, y, x + width, y + height, radius);
-          context.arcTo(x + width, y + height, x, y + height, radius);
-          context.arcTo(x, y + height, x, y, radius);
-          context.arcTo(x, y, x + width, y, radius);
-          context.closePath();
-          context.stroke();
+       
+        const x = points[0];
+        const y = points[1];
+        const width = (points[2 * (len - 1)] - points[0])
+        const height = (points[2 * (len - 1) + 1] - points[1])
+        let radius = 20;
+        context.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
+        if (points[0] > points[2 * (len - 1)]) {
+          context.moveTo(x - radius, y);
+        } else {
+          context.moveTo(x + radius, y);
         }
+        context.arcTo(x + width, y, x + width, y + height, radius);
+        context.arcTo(x + width, y + height, x, y + height, radius);
+        context.arcTo(x, y + height, x, y, radius);
+        context.arcTo(x, y, x + width, y, radius);
+        context.closePath();
+        context.stroke();
+        context.strokeStyle = tool.color;
+        
+        
+        
+        // var text = "Input Text";
+        // context.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
+        // rectangledText(points[0],points[1], text ,(points[2 * (len - 1)] - points[0]))
+
+        // function rectangledText(x, y, text ,width){
+        //   var height = wrapText(x,y,text, width)
+        //   context.strokeRect(x, y, width, height);
+        //   context.stroke();
+        //   context.strokeStyle = 'black';
+        // }
+
+        // function wrapText(x,y,text,width){
+        //   var startingY=y;
+        //   var words = text.split(' ');
+        //   var line = '';
+        //   var space='';
+        //   var lineHeight = 20 * 1.286;
+        //   context.font = 20 + "px " + 'verdana';
+        //   context.textAlign='left';
+        //   context.textBaseline='top'
+        //   for (var n=0; n<words.length; n++) {
+        //     var testLine = line + space + words[n];
+        //     space=' ';
+        //     if (context.measureText(testLine).width > width) {
+        //       context.fillText(line,x,y);
+        //       line = words[n] + ' ';
+        //       y += lineHeight;
+        //       space='';
+        //     } else {
+        //       line = testLine;
+        //     }
+        //   }
+        //   context.fillText(line, x,y);
+        //   return(y+lineHeight-startingY);
+        // }
+        break;
+
+      case 'pointer':
+        context.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
+        context.globalCompositeOperation = 'source-over';
+        // context.lineCap = "round";
+        context.lineJoin = 'round';
+        context.fillStyle = 'red';
+        // context.strokeStyle = 'black';
+        context.lineWidth = 1; // check line width 영향...
+        context.beginPath();
+        context.arc(points[2 * (len - 1)], points[2 * (len - 1) + 1], 20 / 2, 0, Math.PI * 2, !0);
+        context.fill();
+        // context.stroke();
+        context.closePath();
+        document.getElementById('canvas').style.cursor = 'none'
+        break;
+      // case 'highlighter':
+      //   context.globalCompositeOperation = 'multiply';
+      //   context.lineCap = "square";
+      //   context.lineJoin = 'round';
+      //   context.beginPath();
+      //   context.fillStyle = '#ff0';
+      //   context.quadraticCurveTo(points[2 * i], points[2 * i + 1], points[2 * (i + 1)], points[2 * (i + 1) + 1]);
+      //   context.fillRect(points[2 * (len - 1)]-(tool.width/2), points[2 * (len - 1) + 1]-(tool.width/2), tool.width, tool.width);
+      //   // context.fill();
+
+      //   context.closePath();
+      //   break;
+      // 형광펜
+      case 'highlighter':
+        context.globalAlpha = 0.5;
+        context.lineCap = "square";
+        context.lineJoin = 'square';
+        context.fillStyle = '#ff0';
+        context.strokeStyle = '#ff0';
+        context.clearRect(0, 0, context.canvas.width / zoomScale, context.canvas.height / zoomScale);
+        if (len < 3) {
+          context.beginPath();
+          // context.arc(points[0], points[1], tool.width / 2, 0, Math.PI * 2, !0);
+          context.fillRect(points[0]-(tool.width/2), points[1]-(tool.width/2), tool.width, tool.width);
+          context.fill();
+          context.closePath();
+          // eraser Marker
+          // eraserMarker(context,points[len-1],tool.width);
+          this.eraserMarker(context, [points[2 * (len - 1)], points[2 * (len - 1) + 1]], tool.width);
+          break;
+        }
+
+        context.moveTo(points[0], points[1]);
+        for (i = 1; i < len - 2; i++) {
+          c = (points[2 * i] + points[2 * (i + 1)]) / 2;
+          d = (points[2 * i + 1] + points[2 * (i + 1) + 1]) / 2;
+          context.quadraticCurveTo(points[2 * i], points[2 * i + 1], c, d);
+        }
+
+        context.quadraticCurveTo(points[2 * i], points[2 * i + 1], points[2 * (i + 1)], points[2 * (i + 1) + 1]);
+        context.stroke();
+        context.closePath();
+
+        // eraser Marker
+        this.eraserMarker(context, [points[2 * (len - 1)], points[2 * (len - 1) + 1]], tool.width);
         break;
 
       default:
@@ -218,7 +361,7 @@ export class DrawingService {
     const len = points.length / 2;
 
     if (tool.type === "pen" || tool.type === "line" || tool.type === "circle" ||
-      tool.type === "rectangle" || tool.type === "roundedRectangle") {
+      tool.type === "rectangle" || tool.type === "roundedRectangle" || tool.type === "highlighter") {
       context.globalCompositeOperation = 'source-over';
     }
     else {
@@ -331,12 +474,40 @@ export class DrawingService {
         context.stroke();
         context.strokeStyle = tool.color;
         break;
+      
+      // 형광펜
+      case 'highlighter':
+        // context.globalCompositeOperation = 'color'
+        context.globalAlpha = 0.5;
+        context.lineCap = "square";
+        context.lineJoin = 'round';
+        context.fillStyle = '#ff0';
+        context.strokeStyle = '#ff0';
+        if (len < 3) {
+          context.beginPath();
+          context.fillRect(points[0]-(tool.width/2), points[1]-(tool.width/2), tool.width, tool.width);
+          context.fill();
+          context.closePath();
+          context.globalAlpha = 1
+          return;
+        }
+        context.beginPath();
+        context.moveTo(points[0], points[1]);
+        // console.log('end')
+        for (i = 1; i < len - 2; i++) {
+          c = (points[2 * i] + points[2 * (i + 1)]) / 2;
+          d = (points[2 * i + 1] + points[2 * (i + 1) + 1]) / 2;
+          context.quadraticCurveTo(points[2 * i], points[2 * i + 1], c, d);
+        }
+        context.quadraticCurveTo(points[2 * i], points[2 * i + 1], points[2 * (i + 1)], points[2 * (i + 1) + 1]);
+        context.stroke();
+        context.closePath();
+        context.globalAlpha = 1
+        break;
 
       default:
         break;
     }
-
-
   }
 
   /**
@@ -376,6 +547,35 @@ export class DrawingService {
     this.dataArray = [];
   }
 
+
+
+  async rxPointer(data, sourceCanvas, targetCanvas, scale, docNum, pageNum) {
+    console.log(data)
+    console.log('rxPointer-------------------------')
+    const context = sourceCanvas.getContext("2d"); 
+    context.globalCompositeOperation = 'source-over';
+    // context.lineCap = "round";
+    context.lineJoin = 'round';
+    context.fillStyle = 'red';
+    // context.strokeStyle = 'black';
+    // context.lineWidth = 1; // check line width 영향...
+    context.beginPath();
+    context.clearRect(0, 0, sourceCanvas.width / scale, sourceCanvas.height / scale);
+    context.arc(data.points[0], data.points[1], 20 / 2, 0, Math.PI * 2, !0);
+    context.fill();
+    // context.stroke();
+
+    // 포인터 추가 부분 //////////
+    if(data.tool.type == 'pointer'){
+      context.shadowColor = "red";
+      context.shadowBlur = 30;
+    }
+    ////////////////////////////////////////
+
+    context.closePath();
+    return;
+
+  }
   /**
    * page 전환 등...--> 기존에 그려지고 있던 event stop.
    *
@@ -413,6 +613,15 @@ export class DrawingService {
 
     const scale = this.dataArray[0].scale;
 
+    if (data.tool.type == 'line' || data.tool.type == 'circle'
+        || data.tool.type == 'rectangle' || data.tool.type == 'roundedRectangle'
+    ){
+      // context.clearRect(0, 0, sourceCanvas.width / scale, sourceCanvas.height / scale);
+      this.end(targetContext, data.points, data.tool);
+      this.dataArray.shift();
+      this.rxDrawingFunc();
+      return;
+    }
 
     context.lineCap = "round";
     context.lineJoin = 'round';
@@ -423,57 +632,68 @@ export class DrawingService {
       context.strokeStyle = data.tool.color;
       context.fillStyle = data.tool.color;
     }
-    else {
+    else if (data.tool.type === "eraser") {
       context.globalCompositeOperation = 'destination-out';
       context.strokeStyle = "rgba(0, 0, 0, 1)";
       context.fillStyle = "rgba(0, 0, 0, 1)";
     }
+    else if (data.tool.type === "highlighter") {
+      context.globalCompositeOperation = 'xor';
+      context.globalAlpha = 0.5;
+      context.lineCap = "square";
+      context.fillStyle = '#ff0';
+      context.strokeStyle = '#ff0';  
+    } 
 
-    if (pointsLength < 3) {
-      context.beginPath();
-      context.arc(data.points[0], data.points[1], data.tool.width / 2, 0, Math.PI * 2, !0);
-      context.fill();
-      context.closePath();
-
-      this.dataArray.shift();
-      this.rxDrawingFunc();
-      return;
-    }
-
-    let i = 2;
-
-    this.stop = setInterval(() => {
-      context.beginPath();
-      if (i === 2) {
-        context.moveTo(data.points[0], data.points[1]);
-      }
-      else {
-        const a = (data.points[2 * (i - 2)] + data.points[2 * (i - 1)]) / 2;
-        const b = (data.points[2 * (i - 2) + 1] + data.points[2 * (i - 1) + 1]) / 2;
-        context.moveTo(a, b);
-      }
-      const c = (data.points[2 * (i - 1)] + data.points[2 * i]) / 2;
-      const d = (data.points[2 * (i - 1) + 1] + data.points[2 * i + 1]) / 2;
-
-      context.quadraticCurveTo(data.points[2 * (i - 1)], data.points[2 * (i - 1) + 1], c, d);
-      context.stroke();
-      i += 1;
-
-      if (i === pointsLength) {
-        clearInterval(this.stop);
-        this.stop = null;
+    if(data.tool.type === "pen" || data.tool.type === "eraser" ||  data.tool.type === "highlighter"){
+      if (pointsLength < 3) {
+        context.beginPath();
+        context.arc(data.points[0], data.points[1], data.tool.width / 2, 0, Math.PI * 2, !0);
+        context.fill();
+        context.closePath();
 
         this.dataArray.shift();
-        context.clearRect(0, 0, sourceCanvas.width / scale, sourceCanvas.height / scale);
-
-        // 최종 target에 그리기
-        this.end(targetContext, data.points, data.tool);
-
-        // 다음 event 그리기 시작.
         this.rxDrawingFunc();
+        return;
       }
 
-    }, data.timeDiff / pointsLength);
+      let i = 2;
+
+      this.stop = setInterval(() => {
+        context.beginPath();
+        if (i === 2) {
+          context.moveTo(data.points[0], data.points[1]);
+        }
+        else {
+          context.lineCap = "round";
+          const a = (data.points[2 * (i - 2)] + data.points[2 * (i - 1)]) / 2;
+          const b = (data.points[2 * (i - 2) + 1] + data.points[2 * (i - 1) + 1]) / 2;
+          context.moveTo(a, b);
+        }
+        const c = (data.points[2 * (i - 1)] + data.points[2 * i]) / 2;
+        const d = (data.points[2 * (i - 1) + 1] + data.points[2 * i + 1]) / 2;
+
+        context.quadraticCurveTo(data.points[2 * (i - 1)], data.points[2 * (i - 1) + 1], c, d);
+        context.stroke();
+        i += 1;
+
+        if (i === pointsLength) {
+          clearInterval(this.stop);
+          this.stop = null;
+
+          this.dataArray.shift();
+          context.clearRect(0, 0, sourceCanvas.width / scale, sourceCanvas.height / scale);
+
+          // 최종 target에 그리기
+          this.end(targetContext, data.points, data.tool);
+
+          // 다음 event 그리기 시작.
+          this.rxDrawingFunc();
+        }
+
+      }, data.timeDiff / pointsLength);
+
+    }
   }
 
   /**

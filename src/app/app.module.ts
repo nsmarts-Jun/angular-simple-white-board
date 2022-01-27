@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './material/material.module';
 import { FileUploadModule } from 'ng2-file-upload';
+import { IconModule } from '@visurel/iconify-angular';
 
 // Component
 import { AppComponent } from './app.component';
@@ -34,6 +35,7 @@ import { DragScrollDirective } from 'src/@wb/directives/drag-scroll.directive';
     HttpClientModule,
     AppRoutingModule,
     FileUploadModule,
+    IconModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

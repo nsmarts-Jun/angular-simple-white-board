@@ -26,6 +26,8 @@
     "@fortawesome/angular-fontawesome": "^0.8.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@iconify/icons-mdi": "^1.1.44",
+    "@visurel/iconify-angular": "^11.0.0",
     "animate.css": "^4.1.1",
     "bootstrap": "^4.6.0",
     "font-awesome": "^4.7.0",

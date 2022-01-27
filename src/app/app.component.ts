@@ -52,7 +52,10 @@ export class AppComponent implements OnInit {
     // 새로운 판서 Event 저장
     this.eventBusService.on('gen:newDrawEvent', this.unsubscribe$, async (data) => {
       const currentPage = this.viewInfoService.state.currentPage;
-      this.drawStorageService.setDrawEvent(currentPage, data);
+      // local Store 저장
+      if (data.tool.type != 'pointer') {
+        this.drawStorageService.setDrawEvent(currentPage, data);
+      }
     });
 
   }

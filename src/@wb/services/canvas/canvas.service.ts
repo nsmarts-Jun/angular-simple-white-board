@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { merge, fromEvent, Subject } from 'rxjs';
 import { CANVAS_CONFIG } from '../../config/config';
 import { EventData } from '../eventBus/event.class';
 import { DrawingService } from '../drawing/drawing.service';
 import { EventBusService } from '../eventBus/event-bus.service';
+import { takeUntil, throttleTime } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -204,6 +205,28 @@ export class CanvasService {
 
 
       drawingService.start(sourceCtx, points, tool);
+
+      if(tool.type == 'pointer'){
+				eventBusService.emit(new EventData('gen:newDrawEvent', {
+					points: oldPoint,
+					tool
+				}));
+			// 포인터일 경우 end가 아닌 start와 move 때 socket으로 전송
+				merge(
+					fromEvent(sourceCanvas, 'mousemove'),
+					fromEvent(sourceCanvas, 'touchmove')
+				  ).pipe(
+					takeUntil(fromEvent(sourceCanvas, 'mouseup')),
+					takeUntil(fromEvent(sourceCanvas, 'mouseout')),
+					takeUntil(fromEvent(sourceCanvas, 'touchend')),
+					throttleTime(30)
+				  ).subscribe(()=>{
+					  	eventBusService.emit(new EventData('gen:newDrawEvent', {
+							points: oldPoint,
+							tool
+						}));
+				  });
+			}
       startTime = Date.now();
       event.preventDefault();
     };
@@ -229,12 +252,29 @@ export class CanvasService {
       if (!isDown) return;
       isDown = false;
       isTouch = false;
-      drawingService.end(targetCtx, points, tool);
 
+      sourceCtx.globalAlpha = 1
+
+      drawingService.end(targetCtx, points, tool);
+      
       /*----------------------------------------------
         Drawing Event 정보
         -> gen:newDrawEvent로 publish.
       -----------------------------------------------*/
+
+      if(tool.type == 'pointer'){
+				sourceCtx.shadowColor = "";
+				sourceCtx.shadowBlur = 0;
+				tool.type = 'pointerEnd';
+				eventBusService.emit(new EventData('gen:newDrawEvent', {
+					points: newPoint,
+					tool
+				}));
+				tool.type = 'pointer';
+				document.getElementById('canvas').style.cursor = 'default'
+				points = [];
+				return clear(sourceCanvas, scale); 
+			}
       endTime = Date.now();
       const drawingEvent = {
         points,
