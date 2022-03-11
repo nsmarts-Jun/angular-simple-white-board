@@ -69,6 +69,12 @@
             </div>
 
             <div>
+              <button type="button" (click)="changeTool('textarea');" mat-icon-button>
+                  <mat-icon [ngClass]="(currentTool == 'textarea') && (mode == 'draw')?'active':''">draw</mat-icon>
+              </button>
+          </div>
+
+            <div>
                 <button type="button" (click)="changeMode('move');" mat-icon-button>
                     <mat-icon [ngClass]="(mode == 'move')?'active':''"> open_with </mat-icon>
                 </button>

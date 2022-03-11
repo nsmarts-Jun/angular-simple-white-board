@@ -241,7 +241,6 @@ export class CanvasService {
         oldPoint = newPoint;
         points.push(oldPoint[0]); // x
         points.push(oldPoint[1]); // y
-        console.log(points)
         drawingService.move(sourceCtx, points, tool, scale, sourceCanvas); // scale: eraser marker 정확히 지우기 위함.
         event.preventDefault();
         // console.log(points)
@@ -254,13 +253,19 @@ export class CanvasService {
       isTouch = false;
 
       sourceCtx.globalAlpha = 1
-
+      console.log('---------------------------')
+      console.log('upEvent')
+      console.log('---------------------------')
       drawingService.end(targetCtx, points, tool);
-      
       /*----------------------------------------------
         Drawing Event 정보
         -> gen:newDrawEvent로 publish.
       -----------------------------------------------*/
+
+      // text 모드 일 경우 textarea에 값이 넣어질때 gen:newDrawEvent 실행
+      if(tool.type == 'textarea'){
+        return clear(sourceCanvas, scale); 
+      }
 
       if(tool.type == 'pointer'){
 				sourceCtx.shadowColor = "";
@@ -275,13 +280,13 @@ export class CanvasService {
 				points = [];
 				return clear(sourceCanvas, scale); 
 			}
+   
       endTime = Date.now();
-      const drawingEvent = {
-        points,
-        tool,
-        timeDiff: endTime - startTime
-      };
-
+        const drawingEvent = {
+          points,
+          tool,
+          timeDiff: endTime - startTime
+        };
       // Generate Event Emitter: new Draw 알림
       eventBusService.emit(new EventData('gen:newDrawEvent', drawingEvent));
 

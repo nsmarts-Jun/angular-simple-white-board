@@ -55,6 +55,8 @@ export class BoardNavComponent implements OnInit {
     circle: this.widthSet.circle[0],
     rectangle: this.widthSet.rectangle[0],
     roundedRectangle: this.widthSet.roundedRectangle[0],
+    textarea: this.widthSet.textarea[0],
+    text: this.widthSet.text[0],
   };
   mode: any = 'move';
 
@@ -96,6 +98,8 @@ export class BoardNavComponent implements OnInit {
           circle: editInfo.toolsConfig.circle.width,
           rectangle: editInfo.toolsConfig.rectangle.width,
           roundedRectangle: editInfo.toolsConfig.roundedRectangle.width,
+          text: editInfo.toolsConfig.text.width,
+          textarea: editInfo.toolsConfig.textarea.width,
         }
       });
   }
@@ -118,6 +122,7 @@ export class BoardNavComponent implements OnInit {
         editInfo.toolsConfig.circle.color = color;
         editInfo.toolsConfig.rectangle.color = color;
         editInfo.toolsConfig.roundedRectangle.color = color;
+        editInfo.toolsConfig.text.color = color;
         this.editInfoService.setEditInfo(editInfo);
   }
 
