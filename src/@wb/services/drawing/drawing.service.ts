@@ -625,7 +625,6 @@ export class DrawingService {
             if (context.measureText(lines[i]).width > width) {
               printAt(context, lines[i].substr(0), x, drawHeight, lineHeight, width);
             } else {
-              // 3 이랑 6 은 아주 약간의 위치 조정
               context.fillText(lines[i], x + 3, drawHeight + 6);
               // 한줄 그린 후 다음 줄로 넘어가기 위해
               // 줄 길이 만큼 y좌표에 더 한다.
