@@ -54,11 +54,7 @@ export class AppComponent implements OnInit {
       const currentPage = this.viewInfoService.state.currentPage;
       // local Store 저장
       
-      if (data.tool.type == 'textarea') {
-        this.drawStorageService.setDrawEvent(currentPage, data);
-        data.tool.type = 'text'
-        this.drawStorageService.setDrawEvent(currentPage, data);
-      } else if (data.tool.type != 'pointer') {
+      if (data.tool.type != 'pointer') {
         this.drawStorageService.setDrawEvent(currentPage, data);
       }  
     });

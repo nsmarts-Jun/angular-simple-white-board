@@ -265,15 +265,10 @@ export class CanvasService {
       -----------------------------------------------*/
       // text 모드 일 경우 textarea에 값이 넣어질때 gen:newDrawEvent 실행
       if(tool.type == 'textarea'){
-        const drawingEvent = {
-          points,
-          tool
-        };
-        eventBusService.emit(new EventData('gen:newDrawEvent', drawingEvent));
-      
-        // const editInfo = Object.assign({}, editInfoService.state);
-        // editInfo.tool = 'text';
-        // editInfoService.setEditInfo(editInfo);
+        
+        const editInfo = Object.assign({}, editInfoService.state);
+        editInfo.tool = 'text';
+        editInfoService.setEditInfo(editInfo);
       
         return clear(sourceCanvas, scale); 
       }

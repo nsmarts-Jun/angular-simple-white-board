@@ -632,13 +632,13 @@ export class DrawingService {
             }
           }
 
-          // const drawingEvent = {
-          //   points: points,
-          //   tool,
-          //   txt: txt,
-          // };
+          const drawingEvent = {
+            points: points,
+            tool,
+            txt: txt,
+          };
 
-          // eventBusService.emit(new EventData('gen:newDrawEvent', drawingEvent));
+          eventBusService.emit(new EventData('gen:newDrawEvent', drawingEvent));
         }
 
         // textarea의 값의 길이가 textarea의 너비보다 길 경우 줄바꿈 함수
