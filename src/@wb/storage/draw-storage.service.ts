@@ -35,7 +35,7 @@ export class DrawStorageService {
    * @param {object} drawingEvent 새로운 draw event
    */
   setDrawEvent(pageNum, drawingEvent) {
-
+    console.log(drawingEvent)
     const itemIndex = this.drawVar.findIndex((item)=> item.pageNum === pageNum );
 
     // 현재 해당 page의 data가 없는 경우 최초 생성

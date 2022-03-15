@@ -70,6 +70,7 @@ export class RenderingService {
     // 전체 redraw
     if (drawingEvents?.drawingEvent && drawingEvents?.drawingEvent.length > 0) {
       for (const item of drawingEvents?.drawingEvent) {
+        console.log(item.txt)
         this.drawingService.end(targetCtx, item.points, item.tool);
       }
     }

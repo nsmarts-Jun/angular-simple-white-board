@@ -157,7 +157,6 @@ export class BoardNavComponent implements OnInit {
     const editInfo = Object.assign({}, this.editInfoService.state);
     if (editInfo.tool == 'eraser' && editInfo.mode == 'draw' && tool == 'eraser') {
       if(confirm("Do you want to delete all drawings on the current page?")){
-
           // 자기자신한테 있는 드로우 이벤트 제거
           this.drawStorageService.clearDrawingEvents(this.currentPageNum);
           this.eventBusService.emit(new EventData('rmoveDrawEventPageRendering', ''));

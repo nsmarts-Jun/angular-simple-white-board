@@ -5,6 +5,7 @@ import { EventData } from '../eventBus/event.class';
 import { DrawingService } from '../drawing/drawing.service';
 import { EventBusService } from '../eventBus/event-bus.service';
 import { takeUntil, throttleTime } from 'rxjs/operators';
+import { EditInfoService } from 'src/@wb/store/edit-info.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class CanvasService {
   constructor(
     private drawingService: DrawingService,
     private eventBusService: EventBusService,
+    private editInfoService: EditInfoService,
   ) { }
 
 
@@ -140,6 +142,7 @@ export class CanvasService {
     console.log(">>>> Add Event handler:", tool, zoomScale);
     const drawingService = this.drawingService;
     const eventBusService = this.eventBusService;
+    const editInfoService = this.editInfoService;
 
     const sourceCtx = sourceCanvas.getContext("2d");
     const targetCtx = targetCanvas.getContext("2d");
@@ -187,7 +190,7 @@ export class CanvasService {
     this.listenerSet.push({ id: sourceCanvas.id, name: 'touchmove', handler: moveEvent });
     this.listenerSet.push({ id: sourceCanvas.id, ame: 'touchend', handler: upEvent });
 
-
+    
     // console.log(this.listenerSet);
 
     function downEvent(event) {
@@ -202,7 +205,6 @@ export class CanvasService {
 
       oldPoint = getPoint(isTouch ? event.touches[0] : event, this, scale);
       points = oldPoint;
-
 
       drawingService.start(sourceCtx, points, tool);
 
@@ -261,9 +263,27 @@ export class CanvasService {
         Drawing Event 정보
         -> gen:newDrawEvent로 publish.
       -----------------------------------------------*/
-
       // text 모드 일 경우 textarea에 값이 넣어질때 gen:newDrawEvent 실행
       if(tool.type == 'textarea'){
+        const drawingEvent = {
+          points,
+          tool
+        };
+        eventBusService.emit(new EventData('gen:newDrawEvent', drawingEvent));
+      
+        // const editInfo = Object.assign({}, editInfoService.state);
+        // editInfo.tool = 'text';
+        // editInfoService.setEditInfo(editInfo);
+      
+        return clear(sourceCanvas, scale); 
+      }
+
+      
+
+      if(tool.type == 'text'){
+        const editInfo = Object.assign({}, editInfoService.state);
+        editInfo.tool = 'textarea';
+        editInfoService.setEditInfo(editInfo);
         return clear(sourceCanvas, scale); 
       }
 
@@ -290,6 +310,7 @@ export class CanvasService {
       // Generate Event Emitter: new Draw 알림
       eventBusService.emit(new EventData('gen:newDrawEvent', drawingEvent));
 
+   
       // 3. cover canvas 초기화
       clear(sourceCanvas, scale);
 
