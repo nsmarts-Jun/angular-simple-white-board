@@ -601,23 +601,25 @@ export class DrawingService {
           context.textBaseline = 'top'; // 글씨 위치 지정
           context.textAlign = 'left';
           context.font = '14px Arial'; // 글씨 폰트 지정
-          // textarea의 input값 중 줄바꿈("\n")을 기준으로 배열 생성
+          // txt.split("\n")은 textarea의 input값 중
+          // 줄바꿈("\n")을 기준으로 배열 생성
           // aaa  
           // aaa  일 경우    ['aaa','aaa','aaa'] 로 출력 
           // aaa
           var lines = txt.split("\n"); 
           var lineHeight = 14.5 * 1.4; // 한줄 높이 지정
-          drawHeight = y; // drawHeight 줄 바꿈시 y값 좌표가 바뀐다.
+          drawHeight = y; // 줄 바꿈시 y값 좌표가 바뀐다. drawHeight는 이를 담고 있는 변수  
 
           for (var i = 0; i < lines.length; i++) {
             // context.measureText(lines[i]).width textarea의 value의 길이
             // 입력한 값이 textarea 넓이보다 길면 다음 줄로 내려가게 한다.
             // 'printAt' 함수가 줄바꿈 기능을 한다.
             // 만약 입력한 값이 textarea 넓이보다 짧으면 
-            // fillText로 바로 그려버린다.
+            // 'fillText' 함수로 바로 그려버린다.
             if(context.measureText(lines[i]).width > width){
               printAt(context, lines[i].substr(0), x, drawHeight, lineHeight,  width);
             } else {
+              // 3 이랑 6 은 아주 약간의 위치 조정
               context.fillText(lines[i], x + 3, drawHeight + 6);
               // 한줄 그린 후 다음 줄로 넘어가기 위해
               // 줄 길이 만큼 y좌표에 더 한다.
@@ -635,14 +637,15 @@ export class DrawingService {
         
         // textarea의 값의 길이가 textarea의 너비보다 길 경우 줄바꿈 함수
         function printAt( context , text, x, y, lineHeight, fitWidth){
-            for (var idx = 1; idx <= text.length; idx++){
-              // textarea의 넓이 보다 긴 한줄을 한글자씩 분해
-              var str = text.substr(0, idx);
+          // textarea의 넓이 보다 긴 한줄을 한글자씩 분해  
+            for (var idx = 1; idx <= text.length; idx++){  
               // 분해한 글짜가 textarea보다 짧으면 함수 실행없이 
               // 그냥 한바퀴 돈다.(분해한 글자 하나 더해진다)
+              var str = text.substr(0, idx);
               // 분해한 글자 하나씩 더해지다가 textarea보다 길어지면
-              // canvas을 그리고 한줄 띄운다
+              // canvas에 한줄 그리고 한줄 띄운다
               if (context.measureText(str).width > fitWidth){   
+                  // 3 이랑 6 은 아주 약간의 위치 조정
                   context.fillText( text.substr(0, idx-1), x + 3, y + 6);
                   drawHeight = y + lineHeight
                   printAt(context, text.substr(idx-1), x, drawHeight, lineHeight,  fitWidth);
@@ -651,6 +654,7 @@ export class DrawingService {
             }
             // 마지막 줄을 canvas에 그려주고
             // y좌표를 줄 높이 만큼 더 해준다.
+            // 3 이랑 6 은 아주 약간의 위치 조정
             context.fillText( text, x + 3, y + 6);
             drawHeight = y + lineHeight
           }
