@@ -256,43 +256,22 @@ export class CanvasService {
       isDown = false;
       isTouch = false;
 
-     
-
       sourceCtx.globalAlpha = 1
-      console.log('---------------------------')
-      console.log('upEvent')
-      console.log('---------------------------')
-      drawingService.end(targetCtx, points, tool);
-      /*----------------------------------------------
-        Drawing Event 정보
-        -> gen:newDrawEvent로 publish.
-      -----------------------------------------------*/
-      // text 모드 일 경우 textarea에 값이 넣어질때 gen:newDrawEvent 실행
-      if (tool.type == 'textarea') {
-        // var textInput = (<HTMLInputElement>document.getElementById('textarea'));
-        // const textValue  = textInput.value
-        // console.log(textInput)
-        // const drawingEvent = {
-        //   textareaPoints,
-        //   tool,
-        //   txt: textValue,
-        // };
+
+      drawingService.end(targetCtx, points, tool,'', scale);
+
+      if (tool.type == 'text') {
         const editInfo = Object.assign({}, editInfoService.state);
-        editInfo.tool = 'text';
+        editInfo.tool = 'textarea';
         editInfoService.setEditInfo(editInfo);
-        
         return clear(sourceCanvas, scale);
       }
 
-
-
-      if (tool.type == 'text') {
-        console.log('코드 확인')
-        
-
-        // textInput.parentNode.removeChild(textInput);
+      // text 모드 일 경우 textarea에 값이 넣어질때 gen:newDrawEvent 실행
+      if (tool.type == 'textarea') {
+        console.log(tool.type)
         const editInfo = Object.assign({}, editInfoService.state);
-        editInfo.tool = 'textarea';
+        editInfo.tool = 'text';
         editInfoService.setEditInfo(editInfo);
         return clear(sourceCanvas, scale);
       }
@@ -311,6 +290,10 @@ export class CanvasService {
         return clear(sourceCanvas, scale);
       }
 
+      /*----------------------------------------------
+        Drawing Event 정보
+        -> gen:newDrawEvent로 publish.
+      -----------------------------------------------*/
       endTime = Date.now();
       const drawingEvent = {
         points,

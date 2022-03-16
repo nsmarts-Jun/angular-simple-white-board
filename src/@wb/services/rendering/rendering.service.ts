@@ -44,7 +44,7 @@ export class RenderingService {
 
       // Draw Service의 'end'관련 event 이용 전체 redraw
       for (const item of drawingEvents?.drawingEvent) {
-        this.drawingService.end(thumbCtx, item.points, item.tool, item.txt);
+        this.drawingService.end(thumbCtx, item.points, item.tool, item.txt, item.scale);
       }
       thumbCtx.restore();
     }
