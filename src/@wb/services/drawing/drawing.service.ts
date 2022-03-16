@@ -222,68 +222,6 @@ export class DrawingService {
         }
         break;
 
-      // https://github.com/goldfire/CanvasInput
-      // https://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-using-html-canvas
-      // 모서리가 둥근 사각형 그리기
-      // case 'roundedRectangle':
-
-      //   const x = points[0];
-      //   const y = points[1];
-      //   const width = (points[2 * (len - 1)] - points[0])
-      //   const height = (points[2 * (len - 1) + 1] - points[1])
-      //   let radius = 20;
-      //   context.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
-      //   if (points[0] > points[2 * (len - 1)]) {
-      //     context.moveTo(x - radius, y);
-      //   } else {
-      //     context.moveTo(x + radius, y);
-      //   }
-      //   context.arcTo(x + width, y, x + width, y + height, radius);
-      //   context.arcTo(x + width, y + height, x, y + height, radius);
-      //   context.arcTo(x, y + height, x, y, radius);
-      //   context.arcTo(x, y, x + width, y, radius);
-      //   context.closePath();
-      //   context.stroke();
-      //   context.strokeStyle = tool.color;
-
-
-      // case 'text':
-      //   var text = "Input Text";
-      //   context.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
-      //   rectangledText(points[0],points[1], text ,(points[2 * (len - 1)] - points[0]))
-
-      //   function rectangledText(x, y, text ,width){
-      //     var height = wrapText(x,y,text, width)
-      //     context.strokeRect(x, y, width, height);
-      //     context.stroke();
-      //     context.strokeStyle = 'black';
-      //   }
-
-      //   function wrapText(x,y,text,width){
-      //     var startingY=y;
-      //     var words = text.split(' ');
-      //     var line = '';
-      //     var space='';
-      //     var lineHeight = 20 * 1.286;
-      //     context.font = 20 + "px " + 'verdana';
-      //     context.textAlign='left';
-      //     context.textBaseline='top'
-      //     for (var n=0; n<words.length; n++) {
-      //       var testLine = line + space + words[n];
-      //       space=' ';
-      //       if (context.measureText(testLine).width > width) {
-      //         context.fillText(line,x,y);
-      //         line = words[n] + ' ';
-      //         y += lineHeight;
-      //         space='';
-      //       } else {
-      //         line = testLine;
-      //       }
-      //     }
-      //     context.fillText(line, x,y);
-      //     return(y+lineHeight-startingY);
-      //   }
-      //   break;
 
       case 'textarea':
         if (len > 3) {
@@ -367,7 +305,7 @@ export class DrawingService {
 
   }
 
-  end(context, points, tool) {
+  end(context, points, tool, txt?, scale?) {
     context.lineCap = "round";
     context.lineJoin = 'round';
     context.lineWidth = tool.width;
@@ -589,21 +527,64 @@ export class DrawingService {
         // textarea html태그 추출
         var textInput = (<HTMLInputElement>document.getElementById('textarea'));
 
-        //https://stackoverflow.com/questions/33771676/how-to-create-a-dynamic-drawing-text-box-in-html-canvas
-        //Draw the text onto canvas:
-        drawText(textInput.value, this.textX1, this.textY1, this.textareaWidth, this.points, eventBusService);
+        // ****코드 리팩토링 필요
+        // textInput?.value가 있으면 textarea로 값을 가져온 경우 ('text모드에서 element가 생성된 경우')
+        // textInput?.value가 없는 경우는 zoom과 같이 textarea가 element에서 값을 가져오는게 아니라
+        // drawStorage에서 값을 불러오는 경우 사용
+        if (textInput?.value) {
+          // https://stackoverflow.com/questions/33771676/how-to-create-a-dynamic-drawing-text-box-in-html-canvas
+          // Draw the text onto canvas:
+          drawText(textInput?.value, this.textX1, this.textY1, this.textareaWidth);
 
-        // 데이터 초기화
-        this.points = [];
-        this.textX1 = 0;
-        this.textY1 = 0;
-        this.textareaWidth = 0;
+          // 텍스트를 그리고 나서 drawStorage에 좌표랑, 텍스트 저장
+          const drawingEvent = {
+            points: this.points,
+            tool,
+            txt: textInput?.value,
+          };
+          eventBusService.emit(new EventData('gen:newDrawEvent', drawingEvent));
 
-        // textarea 삭제
-        textInput.parentNode.removeChild(textInput);
+        } else {
+          // drawStorage에서 points 좌표를 가져왔기 때문에 다시 계산
+          var textX1 = points[0];
+          var textY1 = points[1];
+          var tempX;
+          var textX2 = points[2 * (points.length - 1)];
+          var textY2 = points[2 * (points.length - 1) + 1];
+          var tempY;
 
 
-        function drawText(txt, x, y, width, points, eventBusService) {
+          // 첫 좌표가 마지막 좌표보다 클 경우
+          if (textX1 > textX2) {
+            tempX = textX1;
+            textX1 = textX2;
+            textX2 = tempX;
+          }
+          if (textY1 > textY2) {
+            tempY = textY1;
+            textY1 = textY2;
+            textY2 = tempY;
+          }
+
+          // textarea의 넓이
+          let textareaWidth = textX2 - textX1
+          // textarea의 길이
+          let textareaHeight = textY2 - textY1
+
+
+          // textarea 최소 길이 높이 설정
+          if (textX2 - textX1 < 180) {
+            textareaWidth = 180;
+          }
+          if (textY2 - textY1 < 30) {
+            textareaHeight = 26;
+          }
+          drawText(txt, textX1, textY1, textareaWidth);
+        }
+
+
+        function drawText(txt, x, y, width) {
+          console.log(txt)
           context.textBaseline = 'top'; // 글씨 위치 지정
           context.textAlign = 'left';
           context.font = '14px Arial'; // 글씨 폰트 지정
@@ -614,9 +595,11 @@ export class DrawingService {
           // aaa  일 경우    ['aaa','aaa','aaa'] 로 출력 
           // aaa
           var lines = txt.split("\n");
+          console.log(lines)
           var lineHeight = 14.5 * 1.4; // 한줄 높이 지정
           drawHeight = y; // 줄 바꿈시 y값 좌표가 바뀐다. drawHeight는 이를 담고 있는 변수  
           for (var i = 0; i < lines.length; i++) {
+            console.log(lines[i])
             // context.measureText(lines[i]).width textarea의 value의 길이
             // 입력한 값이 textarea 넓이보다 길면 다음 줄로 내려가게 한다.
             // 'printAt' 함수가 줄바꿈 기능을 한다.
@@ -632,17 +615,12 @@ export class DrawingService {
             }
           }
 
-          const drawingEvent = {
-            points: points,
-            tool,
-            txt: txt,
-          };
 
-          eventBusService.emit(new EventData('gen:newDrawEvent', drawingEvent));
         }
 
         // textarea의 값의 길이가 textarea의 너비보다 길 경우 줄바꿈 함수
         function printAt(context, text, x, y, lineHeight, fitWidth) {
+          console.log(text)
           // textarea의 넓이 보다 긴 한줄을 한글자씩 분해  
           for (var idx = 1; idx <= text.length; idx++) {
             // 분해한 글짜가 textarea보다 짧으면 함수 실행없이 
@@ -651,6 +629,8 @@ export class DrawingService {
             // 분해한 글자 하나씩 더해지다가 textarea보다 길어지면
             // canvas에 한줄 그리고 한줄 띄운다
             if (context.measureText(str).width > fitWidth) {
+              console.log(context.measureText(str).width)
+              console.log(fitWidth)
               // 3 이랑 6 은 아주 약간의 위치 조정
               context.fillText(text.substr(0, idx - 1), x + 3, y + 6);
               drawHeight = y + lineHeight
@@ -692,7 +672,11 @@ export class DrawingService {
     thumbCtx.save();
     thumbCtx.scale(thumbScale, thumbScale);
 
-    // 나중에 반드시 코드 리팩토링 하자.... 지금 아이디어론 어떻게 해야할지
+    // ****코드 리팩토링 필요
+    // tool.type이 text인 경우 end 함수 쓰지 않는 않는 이유는
+    // end 함수에서 text인 경우 eventBus 함수를 사용해서
+    // 계속 무한 반복한다. 
+    // 드로잉 이벤트를 drawStorage에 넣을 함수를 다른 곳에 위치시켜야한다.
     if (!(data.tool.type == 'textarea' || data.tool.type == 'text')) {
       this.end(thumbCtx, data.points, data.tool);
       thumbCtx.restore();
@@ -754,7 +738,7 @@ export class DrawingService {
       thumbCtx.textBaseline = 'top';
       thumbCtx.textAlign = 'left';
       thumbCtx.font = '14px Arial';
-      
+
       // textarea의 값의 길이가 textarea의 너비보다 길 경우 줄바꿈 함수
       function printAt(context, text, x, y, lineHeight, fitWidth) {
         // textarea의 넓이 보다 긴 한줄을 한글자씩 분해  

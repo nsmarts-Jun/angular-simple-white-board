@@ -44,7 +44,7 @@ export class RenderingService {
 
       // Draw Service의 'end'관련 event 이용 전체 redraw
       for (const item of drawingEvents?.drawingEvent) {
-        this.drawingService.end(thumbCtx, item.points, item.tool);
+        this.drawingService.end(thumbCtx, item.points, item.tool, item.txt);
       }
       thumbCtx.restore();
     }
@@ -70,8 +70,7 @@ export class RenderingService {
     // 전체 redraw
     if (drawingEvents?.drawingEvent && drawingEvents?.drawingEvent.length > 0) {
       for (const item of drawingEvents?.drawingEvent) {
-        console.log(item.txt)
-        this.drawingService.end(targetCtx, item.points, item.tool);
+        this.drawingService.end(targetCtx, item.points, item.tool, item.txt, scale);
       }
     }
   }

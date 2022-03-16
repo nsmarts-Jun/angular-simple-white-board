@@ -11,9 +11,9 @@ import { EditInfoService } from 'src/@wb/store/edit-info.service';
   providedIn: 'root'
 })
 export class CanvasService {
-
+  
   listenerSet = [];
-
+  textareaPoints = [];
   constructor(
     private drawingService: DrawingService,
     private eventBusService: EventBusService,
@@ -78,7 +78,7 @@ export class CanvasService {
     canvasContainer.style.height = containerSize.height + 'px';
 
     // Cover Canvas 조절
-    teacherCanvas.width =  coverCanvas.width = canvasFullSize.width;
+    teacherCanvas.width = coverCanvas.width = canvasFullSize.width;
     teacherCanvas.height = coverCanvas.height = canvasFullSize.height;
 
     // container와 canvas의 비율 => thumbnail window에 활용
@@ -149,7 +149,9 @@ export class CanvasService {
 
     let oldPoint = {};
     let newPoint = {};
-    let points:any = [];
+    let points: any = [];
+
+    let textareaPoints: any = []; // textarea 임시 저장소
 
     // var maxNumberOfPointsPerSocket = 100;
     let startTime = null;
@@ -190,7 +192,7 @@ export class CanvasService {
     this.listenerSet.push({ id: sourceCanvas.id, name: 'touchmove', handler: moveEvent });
     this.listenerSet.push({ id: sourceCanvas.id, ame: 'touchend', handler: upEvent });
 
-    
+
     // console.log(this.listenerSet);
 
     function downEvent(event) {
@@ -208,27 +210,27 @@ export class CanvasService {
 
       drawingService.start(sourceCtx, points, tool);
 
-      if(tool.type == 'pointer'){
-				eventBusService.emit(new EventData('gen:newDrawEvent', {
-					points: oldPoint,
-					tool
-				}));
-			// 포인터일 경우 end가 아닌 start와 move 때 socket으로 전송
-				merge(
-					fromEvent(sourceCanvas, 'mousemove'),
-					fromEvent(sourceCanvas, 'touchmove')
-				  ).pipe(
-					takeUntil(fromEvent(sourceCanvas, 'mouseup')),
-					takeUntil(fromEvent(sourceCanvas, 'mouseout')),
-					takeUntil(fromEvent(sourceCanvas, 'touchend')),
-					throttleTime(30)
-				  ).subscribe(()=>{
-					  	eventBusService.emit(new EventData('gen:newDrawEvent', {
-							points: oldPoint,
-							tool
-						}));
-				  });
-			}
+      if (tool.type == 'pointer') {
+        eventBusService.emit(new EventData('gen:newDrawEvent', {
+          points: oldPoint,
+          tool
+        }));
+        // 포인터일 경우 end가 아닌 start와 move 때 socket으로 전송
+        merge(
+          fromEvent(sourceCanvas, 'mousemove'),
+          fromEvent(sourceCanvas, 'touchmove')
+        ).pipe(
+          takeUntil(fromEvent(sourceCanvas, 'mouseup')),
+          takeUntil(fromEvent(sourceCanvas, 'mouseout')),
+          takeUntil(fromEvent(sourceCanvas, 'touchend')),
+          throttleTime(30)
+        ).subscribe(() => {
+          eventBusService.emit(new EventData('gen:newDrawEvent', {
+            points: oldPoint,
+            tool
+          }));
+        });
+      }
       startTime = Date.now();
       event.preventDefault();
     };
@@ -254,6 +256,8 @@ export class CanvasService {
       isDown = false;
       isTouch = false;
 
+     
+
       sourceCtx.globalAlpha = 1
       console.log('---------------------------')
       console.log('upEvent')
@@ -264,48 +268,59 @@ export class CanvasService {
         -> gen:newDrawEvent로 publish.
       -----------------------------------------------*/
       // text 모드 일 경우 textarea에 값이 넣어질때 gen:newDrawEvent 실행
-      if(tool.type == 'textarea'){
-        
+      if (tool.type == 'textarea') {
+        // var textInput = (<HTMLInputElement>document.getElementById('textarea'));
+        // const textValue  = textInput.value
+        // console.log(textInput)
+        // const drawingEvent = {
+        //   textareaPoints,
+        //   tool,
+        //   txt: textValue,
+        // };
         const editInfo = Object.assign({}, editInfoService.state);
         editInfo.tool = 'text';
         editInfoService.setEditInfo(editInfo);
-      
-        return clear(sourceCanvas, scale); 
+        
+        return clear(sourceCanvas, scale);
       }
 
-      
 
-      if(tool.type == 'text'){
+
+      if (tool.type == 'text') {
+        console.log('코드 확인')
+        
+
+        // textInput.parentNode.removeChild(textInput);
         const editInfo = Object.assign({}, editInfoService.state);
         editInfo.tool = 'textarea';
         editInfoService.setEditInfo(editInfo);
-        return clear(sourceCanvas, scale); 
+        return clear(sourceCanvas, scale);
       }
 
-      if(tool.type == 'pointer'){
-				sourceCtx.shadowColor = "";
-				sourceCtx.shadowBlur = 0;
-				tool.type = 'pointerEnd';
-				eventBusService.emit(new EventData('gen:newDrawEvent', {
-					points: newPoint,
-					tool
-				}));
-				tool.type = 'pointer';
-				document.getElementById('canvas').style.cursor = 'default'
-				points = [];
-				return clear(sourceCanvas, scale); 
-			}
-   
+      if (tool.type == 'pointer') {
+        sourceCtx.shadowColor = "";
+        sourceCtx.shadowBlur = 0;
+        tool.type = 'pointerEnd';
+        eventBusService.emit(new EventData('gen:newDrawEvent', {
+          points: newPoint,
+          tool
+        }));
+        tool.type = 'pointer';
+        document.getElementById('canvas').style.cursor = 'default'
+        points = [];
+        return clear(sourceCanvas, scale);
+      }
+
       endTime = Date.now();
-        const drawingEvent = {
-          points,
-          tool,
-          timeDiff: endTime - startTime
-        };
+      const drawingEvent = {
+        points,
+        tool,
+        timeDiff: endTime - startTime
+      };
       // Generate Event Emitter: new Draw 알림
       eventBusService.emit(new EventData('gen:newDrawEvent', drawingEvent));
 
-   
+
       // 3. cover canvas 초기화
       clear(sourceCanvas, scale);
 

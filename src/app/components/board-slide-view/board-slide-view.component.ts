@@ -200,7 +200,6 @@ export class BoardSlideViewComponent implements OnInit {
   drawThumb(data) {
     const thumbCanvas = this.thumbCanvasRef.toArray()[this.currentPageNum - 1].nativeElement;
     const thumbScale = this.thumbArray[this.currentPageNum - 1].scale;
-
     this.drawingService.drawThumb(data, thumbCanvas, thumbScale);
   };
 
