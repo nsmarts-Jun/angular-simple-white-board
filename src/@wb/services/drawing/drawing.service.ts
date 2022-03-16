@@ -10,6 +10,7 @@ export class DrawingService {
   textY1;
   textareaWidth;
   points;
+  textValue;
 
   constructor(
     private eventBusService: EventBusService,
@@ -518,6 +519,8 @@ export class DrawingService {
 
       case 'text': // textarea를 생성하고나면 text모드로 자동으로 변경
         // 이벤트 버스를 사용, 드로잉 이벤트가 끝이나면 text를 썸네일로 보낸다.
+
+        console.log('text')
         const eventBusService = this.eventBusService;
 
         // textarea의 줄바꿈시 그려야할 y값 좌표가 한줄 씩 내려간다(바뀐다.).
@@ -526,23 +529,34 @@ export class DrawingService {
 
         // textarea html태그 추출
         var textInput = (<HTMLInputElement>document.getElementById('textarea'));
+        this.textValue = textInput?.value
 
         // ****코드 리팩토링 필요
         // textInput?.value가 있으면 textarea로 값을 가져온 경우 ('text모드에서 element가 생성된 경우')
         // textInput?.value가 없는 경우는 zoom과 같이 textarea가 element에서 값을 가져오는게 아니라
         // drawStorage에서 값을 불러오는 경우 사용
         if (textInput?.value) {
+          // textarea 삭제
+          textInput.parentNode.removeChild(textInput);
+
           // https://stackoverflow.com/questions/33771676/how-to-create-a-dynamic-drawing-text-box-in-html-canvas
           // Draw the text onto canvas:
           drawText(textInput?.value, this.textX1, this.textY1, this.textareaWidth);
-
+          
           // 텍스트를 그리고 나서 drawStorage에 좌표랑, 텍스트 저장
           const drawingEvent = {
             points: this.points,
             tool,
-            txt: textInput?.value,
+            txt: this.textValue,
           };
+          // textInput 삭제
           eventBusService.emit(new EventData('gen:newDrawEvent', drawingEvent));
+          
+          // 초기화
+          this.textX1 = 0 
+          this.textY1 = 0
+          this.textareaWidth = 0
+          this.points = []
 
         } else {
           // drawStorage에서 points 좌표를 가져왔기 때문에 다시 계산
@@ -671,103 +685,8 @@ export class DrawingService {
     // prepare scale
     thumbCtx.save();
     thumbCtx.scale(thumbScale, thumbScale);
-
-    // ****코드 리팩토링 필요
-    // tool.type이 text인 경우 end 함수 쓰지 않는 않는 이유는
-    // end 함수에서 text인 경우 eventBus 함수를 사용해서
-    // 계속 무한 반복한다. 
-    // 드로잉 이벤트를 drawStorage에 넣을 함수를 다른 곳에 위치시켜야한다.
-    if (!(data.tool.type == 'textarea' || data.tool.type == 'text')) {
-      this.end(thumbCtx, data.points, data.tool);
-      thumbCtx.restore();
-    } else {
-      var textX1 = data.points[0];
-      var textY1 = data.points[1];
-      var tempX;
-      var textX2 = data.points[2 * (data.points.length - 1)];
-      var textY2 = data.points[2 * (data.points.length - 1) + 1];
-      var tempY;
-
-      const txt = data.txt;
-
-      // 첫 좌표가 마지막 좌표보다 클 경우
-      if (textX1 > textX2) {
-        tempX = textX1;
-        textX1 = textX2;
-        textX2 = tempX;
-      }
-      if (textY1 > textY2) {
-        tempY = textY1;
-        textY1 = textY2;
-        textY2 = tempY;
-      }
-
-      // textarea의 넓이
-      let textareaWidth = textX2 - textX1
-      // textarea의 길이
-      let textareaHeight = textY2 - textY1
-
-
-      // textarea 최소 길이 높이 설정
-      if (textX2 - textX1 < 180) {
-        textareaWidth = 180;
-      }
-      if (textY2 - textY1 < 30) {
-        textareaHeight = 26;
-      }
-
-      var lines = txt.split("\n");
-      var lineHeight = 14.5 * 1.4; // 한줄 높이 지정
-      let drawHeight = textY1; // 줄 바꿈시 y값 좌표가 바뀐다. drawHeight는 이를 담고 있는 변수  
-      for (var i = 0; i < lines.length; i++) {
-        // context.measureText(lines[i]).width textarea의 value의 길이
-        // 입력한 값이 textarea 넓이보다 길면 다음 줄로 내려가게 한다.
-        // 'printAt' 함수가 줄바꿈 기능을 한다.
-        // 만약 입력한 값이 textarea 넓이보다 짧으면 
-        // 'fillText' 함수로 바로 그려버린다.
-        if (thumbCtx.measureText(lines[i]).width > textareaWidth) {
-          printAt(thumbCtx, lines[i].substr(0), textX1, drawHeight, lineHeight, textareaWidth);
-        } else {
-          // 3 이랑 6 은 아주 약간의 위치 조정
-          thumbCtx.fillText(lines[i], textX1 + 3, drawHeight + 6);
-          // 한줄 그린 후 다음 줄로 넘어가기 위해
-          // 줄 길이 만큼 y좌표에 더 한다.
-          drawHeight += lineHeight;
-        }
-      }
-      thumbCtx.textBaseline = 'top';
-      thumbCtx.textAlign = 'left';
-      thumbCtx.font = '14px Arial';
-
-      // textarea의 값의 길이가 textarea의 너비보다 길 경우 줄바꿈 함수
-      function printAt(context, text, x, y, lineHeight, fitWidth) {
-        // textarea의 넓이 보다 긴 한줄을 한글자씩 분해  
-        for (var idx = 1; idx <= text.length; idx++) {
-          // 분해한 글짜가 textarea보다 짧으면 함수 실행없이 
-          // 그냥 한바퀴 돈다.(분해한 글자 하나 더해진다)
-          var str = text.substr(0, idx);
-          // 분해한 글자 하나씩 더해지다가 textarea보다 길어지면
-          // canvas에 한줄 그리고 한줄 띄운다
-          if (context.measureText(str).width > fitWidth) {
-            // 3 이랑 6 은 아주 약간의 위치 조정
-            context.fillText(text.substr(0, idx - 1), x + 3, y + 6);
-            drawHeight = y + lineHeight
-            printAt(context, text.substr(idx - 1), x, drawHeight, lineHeight, fitWidth);
-            return;
-          }
-        }
-        // 마지막 줄을 canvas에 그려주고
-        // y좌표를 줄 높이 만큼 더 해준다.
-        // 3 이랑 6 은 아주 약간의 위치 조정
-        context.fillText(text, x + 3, y + 6);
-        drawHeight = y + lineHeight
-      }
-
-
-
-
-      thumbCtx.restore();
-    }
+    this.end(thumbCtx, data.points, data.tool, data.txt);
+    thumbCtx.restore();
   }
 
   dataArray: any = [];
