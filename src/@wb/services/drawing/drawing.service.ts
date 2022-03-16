@@ -497,9 +497,9 @@ export class DrawingService {
         // textarea의 세로 좌표
         input.style.top = this.textY1*scale + 70 + 'px';  // 70 윗쪽 헤더 네비게이터 길이
         // textarea의 넓이
-        this.textareaWidth = (textX2 - this.textX1)*scale
+        this.textareaWidth = (textX2 - this.textX1)
         // textarea의 길이
-        let textareaHeight = (textY2- this.textY1)*scale
+        let textareaHeight = (textY2- this.textY1)
 
 
         // textarea 최소 길이 높이 설정
@@ -511,8 +511,8 @@ export class DrawingService {
           textareaHeight = 26
         }
 
-        input.style.width = this.textareaWidth + 'px';
-        input.style.height = textareaHeight + 'px';
+        input.style.width = this.textareaWidth * scale + 'px';
+        input.style.height = textareaHeight * scale+ 'px';
 
 
         // body에 textarea 추가
