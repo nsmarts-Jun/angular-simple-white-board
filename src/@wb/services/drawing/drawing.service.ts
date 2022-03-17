@@ -463,7 +463,7 @@ export class DrawingService {
         context.globalAlpha = 1
         break;
 
-      // 글상자
+      // 글상자 textarea 생성
       // https://stackoverflow.com/questions/5026961/html5-canvas-ctx-filltext-wont-do-line-breaks
       case 'textarea':
         this.points = points
@@ -477,8 +477,8 @@ export class DrawingService {
         var tempY;
         input.id = 'textarea'
         input.style.position = 'fixed';
-        input.style.fontSize = 14*scale+'px';
-        // input.style.line-height = 1 *scale ;
+        input.style.fontSize = 14 * scale + 'px';
+
         // 마우스를 좌상단 방향으로 드래그할 경우 textarea 위치가 이상하게 나옴
         // 첫 좌표가 마지막 좌표보다 클 경우 서로 위치를 바꿔야한다.
         if (this.textX1 > textX2) {
@@ -513,11 +513,11 @@ export class DrawingService {
 
 
         // textarea 최소 길이 높이 설정
-        if (textX2 - this.textX1 < 180/ scale) {
-          this.textareaWidth = 180/scale
+        if (textX2 - this.textX1 < 180 / scale) {
+          this.textareaWidth = 180 / scale
         }
-        if (textY2 - this.textY1 < 26/ scale) {
-          textareaHeight = 26/scale
+        if (textY2 - this.textY1 < 26 / scale) {
+          textareaHeight = 26 / scale
         }
 
         input.style.width = this.textareaWidth * scale + 'px';
@@ -598,8 +598,8 @@ export class DrawingService {
           let textareaWidth = (textX2 - textX1) 
 
           // textarea 최소 길이 높이 설정
-          if (textX2 - this.textX1 < 180/ scale) {
-            textareaWidth = 180/scale
+          if (textareaWidth < 180 / scale) {
+            textareaWidth = 180 / scale
           }
 
           drawText(txt, textX1, textY1, textareaWidth, scale);
@@ -628,7 +628,7 @@ export class DrawingService {
             // 'printAt' 함수가 줄바꿈 기능을 한다.
             // 만약 입력한 값이 textarea 넓이보다 짧으면 
             // 'fillText' 함수로 바로 그려버린다.
-            if (context.measureText(lines[i]).width* scale > width * scale) {
+            if (context.measureText(lines[i]).width* scale > width) {
               console.log(context.measureText(lines[i]).width)
               printAt(context, lines[i].substr(0), x, drawHeight, lineHeight, width);
             } else {

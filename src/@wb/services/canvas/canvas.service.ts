@@ -151,7 +151,7 @@ export class CanvasService {
     let newPoint = {};
     let points: any = [];
 
-    let textareaPoints: any = []; // textarea 임시 저장소
+    let textareaPoints: any = []; // textarea를 그릴 때 사용하는 좌표
 
     // var maxNumberOfPointsPerSocket = 100;
     let startTime = null;
@@ -204,7 +204,12 @@ export class CanvasService {
       if (event.touches) {
         isTouch = true;
       }
-      textareaPoints = [event.clientX, event.clientY];
+
+      // textareaPoints는 textarea를 만들때 사용 
+      if (tool.type == 'textarea') {
+        textareaPoints = [event.clientX, event.clientY]; // textarea 그릴때 사용하는 좌표 저장
+      }
+      
       oldPoint = getPoint(isTouch ? event.touches[0] : event, this, scale);
       points = oldPoint;
 
@@ -256,9 +261,11 @@ export class CanvasService {
       isDown = false;
       isTouch = false;
 
-      textareaPoints.push(event.clientX, event.clientY)
-      console.log(textareaPoints)
-
+      // textareaPoints는 textarea를 만들때 사용 
+      if (tool.type == 'textarea') {
+        textareaPoints.push(event.clientX, event.clientY) 
+      }
+      
       sourceCtx.globalAlpha = 1
 
       drawingService.end(targetCtx, points, tool,'', scale, textareaPoints);
