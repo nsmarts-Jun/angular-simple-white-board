@@ -209,7 +209,7 @@ export class CanvasService {
       if (tool.type == 'textarea') {
         textareaPoints = [event.clientX, event.clientY]; // textarea 그릴때 사용하는 좌표 저장
       }
-      
+
       oldPoint = getPoint(isTouch ? event.touches[0] : event, this, scale);
       points = oldPoint;
 
@@ -280,7 +280,6 @@ export class CanvasService {
 
       // text 모드 일 경우 textarea에 값이 넣어질때 gen:newDrawEvent 실행
       if (tool.type == 'textarea') {
-        console.log(tool.type)
         const editInfo = Object.assign({}, editInfoService.state);
         editInfo.tool = 'text';
         editInfoService.setEditInfo(editInfo);

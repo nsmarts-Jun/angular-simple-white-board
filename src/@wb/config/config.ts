@@ -26,7 +26,7 @@ export const CANVAS_CONFIG = {
 		circle: [4, 7, 13],
 		rectangle: [4, 7, 13],
 		roundedRectangle: [4, 7, 13],
-		textarea: [1, 1, 1],
-		text: [14, 28, 42],
+		textarea: [14, 23, 32],
+		text: [14, 23, 32],
 	}
 };

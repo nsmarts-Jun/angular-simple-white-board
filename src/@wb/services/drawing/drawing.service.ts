@@ -89,7 +89,11 @@ export class DrawingService {
     context.setLineDash([]);
     context.lineCap = "round";
     context.lineJoin = 'round';
-    context.lineWidth = tool.width;
+    if (tool.type != 'textarea'){
+      context.lineWidth = tool.width;
+    } else {
+      context.lineWidth = 1
+    }
     context.fillStyle = tool.color;
     context.strokeStyle = tool.color;
 
@@ -477,7 +481,9 @@ export class DrawingService {
         var tempY;
         input.id = 'textarea'
         input.style.position = 'fixed';
-        input.style.fontSize = 14 * scale + 'px';
+        input.style.fontSize = tool.width * scale + 'px';
+       
+        
 
         // 마우스를 좌상단 방향으로 드래그할 경우 textarea 위치가 이상하게 나옴
         // 첫 좌표가 마지막 좌표보다 클 경우 서로 위치를 바꿔야한다.
@@ -510,7 +516,6 @@ export class DrawingService {
         this.textareaWidth = (textX2 - this.textX1)
         // textarea의 길이
         let textareaHeight = (textY2- this.textY1)
-
 
         // textarea 최소 길이 높이 설정
         if (textX2 - this.textX1 < 180 / scale) {
@@ -607,7 +612,7 @@ export class DrawingService {
         function drawText(txt, x, y, width, scale?) {
           context.textBaseline = 'top'; // 글씨 위치 지정
           context.textAlign = 'left';
-          context.font = '14px Arial'; // 글씨 폰트 지정
+          context.font = tool.width+'px Arial'; // 글씨 폰트 지정
         
           // txt.split("\n")은 textarea의 input값 중
           // 줄바꿈("\n")을 기준으로 배열 생성
@@ -615,7 +620,7 @@ export class DrawingService {
           // aaa  일 경우    ['aaa','aaa','aaa'] 로 출력 
           // aaa
           var lines = txt?.split("\n");
-          var lineHeight = 14.5 * 1.4 ; // 한줄 높이 지정
+          var lineHeight = 14.5 * 1.5 ; // 한줄 높이 지정
           drawHeight = y; // 줄 바꿈시 y값 좌표가 바뀐다. drawHeight는 이를 담고 있는 변수  
           for (var i = 0; i < lines.length; i++) {
             console.log(context.measureText(lines[i]).width * scale)

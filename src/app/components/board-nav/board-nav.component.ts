@@ -139,9 +139,14 @@ export class BoardNavComponent implements OnInit {
 
     if (editInfo.mode != 'draw') return;
 
-    const tool = editInfo.tool; // tool: 'pen', 'eraser', 'shape'
-    editInfo.toolsConfig[tool].width = width;
-
+    // textarea 모드거나 text모드 상태에서 width를 수정하면 같이 바뀥다.
+    if(editInfo.tool == 'text' || editInfo.tool == 'textarea'){
+      editInfo.toolsConfig['text'].width = width;
+      editInfo.toolsConfig['textarea'].width = width;
+    } else {
+      const tool = editInfo.tool; // tool: 'pen', 'eraser', 'shape'
+      editInfo.toolsConfig[tool].width = width;
+    }
     this.editInfoService.setEditInfo(editInfo);
   }
 
