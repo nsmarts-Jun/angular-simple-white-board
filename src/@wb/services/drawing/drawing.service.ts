@@ -634,7 +634,7 @@ export class DrawingService {
               console.log(context.measureText(lines[i]).width)
               printAt(context, lines[i].substr(0), x, drawHeight, lineHeight, width);
             } else {
-              context.fillText(lines[i], x + 3, drawHeight + 6);
+              context.fillText(lines[i], x, drawHeight);
               // 한줄 그린 후 다음 줄로 넘어가기 위해
               // 줄 길이 만큼 y좌표에 더 한다.
               drawHeight += lineHeight;
@@ -655,7 +655,7 @@ export class DrawingService {
             // canvas에 한줄 그리고 한줄 띄운다
             if (context.measureText(str).width  > fitWidth ) {
               // 3 이랑 6 은 아주 약간의 위치 조정
-              context.fillText(text.substr(0, idx - 1), x + 3, y + 6);
+              context.fillText(text.substr(0, idx - 1), x , y );
               drawHeight = y + lineHeight 
               printAt(context, text.substr(idx - 1), x, drawHeight, lineHeight, fitWidth);
               return;
@@ -664,7 +664,7 @@ export class DrawingService {
           // 마지막 줄을 canvas에 그려주고
           // y좌표를 줄 높이 만큼 더 해준다.
           // 3 이랑 6 은 아주 약간의 위치 조정
-          context.fillText(text, x + 3, y + 6);
+          context.fillText(text, x , y);
           drawHeight = y + lineHeight
         }
 
