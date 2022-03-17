@@ -204,7 +204,7 @@ export class CanvasService {
       if (event.touches) {
         isTouch = true;
       }
-
+      textareaPoints = [event.clientX, event.clientY];
       oldPoint = getPoint(isTouch ? event.touches[0] : event, this, scale);
       points = oldPoint;
 
@@ -251,14 +251,18 @@ export class CanvasService {
       }
     };
 
-    function upEvent() {
+    function upEvent(event) {
       if (!isDown) return;
       isDown = false;
       isTouch = false;
 
+      textareaPoints.push(event.clientX, event.clientY)
+      console.log(textareaPoints)
+
       sourceCtx.globalAlpha = 1
 
-      drawingService.end(targetCtx, points, tool,'', scale);
+      drawingService.end(targetCtx, points, tool,'', scale, textareaPoints);
+      event.preventDefault();
 
       if (tool.type == 'text') {
         const editInfo = Object.assign({}, editInfoService.state);

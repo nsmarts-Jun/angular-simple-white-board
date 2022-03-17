@@ -306,7 +306,7 @@ export class DrawingService {
 
   }
 
-  end(context, points, tool, txt?, scale?) {
+  end(context, points, tool, txt?, scale?, textareaPoints?) {
     context.lineCap = "round";
     context.lineJoin = 'round';
     context.lineWidth = tool.width;
@@ -493,9 +493,19 @@ export class DrawingService {
         }
 
         // textarea의 가로 좌표
-        input.style.left = this.textX1*scale + 175 + 'px'; // 175는 왼쪽 사이드 네비게이터 길이
+        if(textareaPoints[0] > textareaPoints[2]){
+          input.style.left = textareaPoints[2] + 'px'; 
+        } else {
+          input.style.left = textareaPoints[0] + 'px'; 
+        }
+
         // textarea의 세로 좌표
-        input.style.top = this.textY1*scale + 70 + 'px';  // 70 윗쪽 헤더 네비게이터 길이
+        if(textareaPoints[1] > textareaPoints[3]){
+          input.style.top = textareaPoints[3] + 'px'; 
+        } else {
+          input.style.top = textareaPoints[1] + 'px'; 
+        }
+
         // textarea의 넓이
         this.textareaWidth = (textX2 - this.textX1)
         // textarea의 길이
@@ -503,12 +513,11 @@ export class DrawingService {
 
 
         // textarea 최소 길이 높이 설정
-        if (textX2 - this.textX1 < 180) {
-          this.textareaWidth = 180
-          ;
+        if (textX2 - this.textX1 < 180/ scale) {
+          this.textareaWidth = 180/scale
         }
-        if (textY2 - this.textY1 < 26) {
-          textareaHeight = 26
+        if (textY2 - this.textY1 < 26/ scale) {
+          textareaHeight = 26/scale
         }
 
         input.style.width = this.textareaWidth * scale + 'px';
@@ -563,7 +572,7 @@ export class DrawingService {
           console.log(txt)
           // drawStorage에서 points 좌표를 가져왔기 때문에 다시 계산
           // 썸네일을 그리거나, zoom을 할 경우 여기서 실행된다.
-
+          console.log(points)
          
           var textX1 = points[0];
           var textY1 = points[1];
@@ -587,11 +596,17 @@ export class DrawingService {
           
           // textarea의 넓이
           let textareaWidth = (textX2 - textX1) 
+
+          // textarea 최소 길이 높이 설정
+          if (textX2 - this.textX1 < 180/ scale) {
+            textareaWidth = 180/scale
+          }
+
           drawText(txt, textX1, textY1, textareaWidth, scale);
         }
 
 
-        function drawText(txt, x, y, width, scale) {
+        function drawText(txt, x, y, width, scale?) {
           context.textBaseline = 'top'; // 글씨 위치 지정
           context.textAlign = 'left';
           context.font = '14px Arial'; // 글씨 폰트 지정
@@ -613,7 +628,8 @@ export class DrawingService {
             // 'printAt' 함수가 줄바꿈 기능을 한다.
             // 만약 입력한 값이 textarea 넓이보다 짧으면 
             // 'fillText' 함수로 바로 그려버린다.
-            if (context.measureText(lines[i]).width* scale > width * scale ) {
+            if (context.measureText(lines[i]).width* scale > width * scale) {
+              console.log(context.measureText(lines[i]).width)
               printAt(context, lines[i].substr(0), x, drawHeight, lineHeight, width);
             } else {
               context.fillText(lines[i], x + 3, drawHeight + 6);
