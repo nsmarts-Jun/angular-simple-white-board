@@ -541,7 +541,7 @@ export class DrawingService {
         this.textValue = textInput?.value
 
         // ****코드 리팩토링 필요
-        // textInput?.value가 있으면 textarea로 값을 가져온 경우 ('text모드에서 element가 생성된 경우')
+        // textInput?.value가 있으면 textarea로 값을 가져온다('text모드에서 element가 생성된 경우')
         // textInput?.value가 없는 경우는 zoom과 같이 textarea가 element에서 값을 가져오는게 아니라
         // drawStorage에서 값을 불러오는 경우 사용
         // this.textValue가 ''일 경우 문제 발생 '' 실행안하게 조건문을 넣는다.
@@ -568,11 +568,9 @@ export class DrawingService {
           this.points = []
 
         } else if(txt) {
-          console.log('hhhhhhhhhh')
-          console.log(txt)
+          
           // drawStorage에서 points 좌표를 가져왔기 때문에 다시 계산
           // 썸네일을 그리거나, zoom을 할 경우 여기서 실행된다.
-          console.log(points)
          
           var textX1 = points[0];
           var textY1 = points[1];
@@ -598,8 +596,8 @@ export class DrawingService {
           let textareaWidth = (textX2 - textX1) 
 
           // textarea 최소 길이 높이 설정
-          if (textareaWidth < 180 / scale) {
-            textareaWidth = 180 / scale
+          if (textareaWidth < 180 ) {
+            textareaWidth = 180 
           }
 
           drawText(txt, textX1, textY1, textareaWidth, scale);
@@ -611,7 +609,6 @@ export class DrawingService {
           context.textAlign = 'left';
           context.font = '14px Arial'; // 글씨 폰트 지정
         
-          console.log(scale)
           // txt.split("\n")은 textarea의 input값 중
           // 줄바꿈("\n")을 기준으로 배열 생성
           // aaa  
@@ -628,7 +625,7 @@ export class DrawingService {
             // 'printAt' 함수가 줄바꿈 기능을 한다.
             // 만약 입력한 값이 textarea 넓이보다 짧으면 
             // 'fillText' 함수로 바로 그려버린다.
-            if (context.measureText(lines[i]).width* scale > width) {
+            if (context.measureText(lines[i]).width * scale > width * scale ) {
               console.log(context.measureText(lines[i]).width)
               printAt(context, lines[i].substr(0), x, drawHeight, lineHeight, width);
             } else {
@@ -651,7 +648,7 @@ export class DrawingService {
             var str = text.substr(0, idx);
             // 분해한 글자 하나씩 더해지다가 textarea보다 길어지면
             // canvas에 한줄 그리고 한줄 띄운다
-            if (context.measureText(str).width  > fitWidth) {
+            if (context.measureText(str).width  > fitWidth ) {
               // 3 이랑 6 은 아주 약간의 위치 조정
               context.fillText(text.substr(0, idx - 1), x + 3, y + 6);
               drawHeight = y + lineHeight 
