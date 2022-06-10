@@ -20,7 +20,7 @@ npm install @angular/flex-layout <br/>
 
 ## 실행
 npm start
-<br/><br/>
+<br/>
 
 ## 기능
 ![0](https://user-images.githubusercontent.com/91444796/146321642-b4f9239f-7caa-456a-a869-663f70b3f3c7.png)
