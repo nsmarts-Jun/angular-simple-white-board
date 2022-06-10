@@ -19,25 +19,25 @@ import { DragScrollDirective } from 'src/@wb/directives/drag-scroll.directive';
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    BoardNavComponent,
-    BoardSlideViewComponent,
-    BoardCanvasComponent,
-    BoardFabsComponent,
-    DragScrollDirective,
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    MaterialModule,
-    FormsModule,
-    HttpClientModule,
-    AppRoutingModule,
-    FileUploadModule,
-    IconModule,
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        BoardNavComponent,
+        BoardSlideViewComponent,
+        BoardCanvasComponent,
+        BoardFabsComponent,
+        DragScrollDirective,
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        FormsModule,
+        HttpClientModule,
+        AppRoutingModule,
+        FileUploadModule,
+        IconModule,
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
