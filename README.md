@@ -6,7 +6,7 @@
 ## 환경설정
 | name | version |
 |---|---|
-| Angular | 12.2.9 |
+| Angular | 13.3.9 |
 | Node | 14.20.0 |
 | Npm | 6.14.17 |
 
