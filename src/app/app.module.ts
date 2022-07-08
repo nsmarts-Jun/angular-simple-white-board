@@ -8,6 +8,7 @@ import { MaterialModule } from './material/material.module';
 import { FileUploadModule } from 'ng2-file-upload';
 import { IconModule } from '@visurel/iconify-angular';
 
+
 // Component
 import { AppComponent } from './app.component';
 import { BoardNavComponent } from './components/board-nav/board-nav.component';
