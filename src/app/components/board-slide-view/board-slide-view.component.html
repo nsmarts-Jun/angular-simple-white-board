@@ -9,7 +9,7 @@
   <div class="thumb-item" *ngFor="let thumb of thumbArray; let i = index" (click)="clickThumb(i+1)">
 
     <!-- thumbnail 판서 canvas -->
-    <canvas #thumbCanvas  class="thumbCanvas" width="{{thumb.width}}" height="{{thumb.height}}">
+    <!-- <canvas #thumbCanvas  class="thumbCanvas" width="{{thumb.width}}" height="{{thumb.height}}">
     </canvas>
 
     <div class="page-number">
@@ -18,6 +18,6 @@
     <div class="thumb-window-container" *ngIf="currentPage === i+1">
       <div #thumbWindow id="thumb-window" [ngStyle]="{'width':thumbWindowSize.width, 'height':thumbWindowSize.height}">
       </div>
-    </div>
+    </div> -->
   </div>
 </div>
